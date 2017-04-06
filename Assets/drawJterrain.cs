@@ -16,10 +16,11 @@ public class drawJterrain : MonoBehaviour {
 	GameObject Player ;
 	
 	string  ipaddress = "https://maps.googleapis.com/maps/api/elevation/json?locations="; 
+	public string googleKey ="AIzaSyApPJ8CP4JxKWIW2vavwdRl6fnDvdcgCLk";//需要自己注册！！
 	string StrWwwData;
-    public float lat = 40.00f;//+-90
-    public float lng = 116.00f;//+-180
-     float steplat = 116.00f;//+-180
+//		public float lat = 40.00f;//+-90
+//		public float lng = 116.00f;//+-180
+    float steplat ;//= 116.00f;//+-180
     public string Trrname;
 
     public  float northeastlat;// = -90;//+-90
@@ -39,17 +40,17 @@ public class drawJterrain : MonoBehaviour {
 
 
     private Vector2[] uvs;
-	private ArrayList   strfile=new ArrayList() ;
+	//	private ArrayList   strfile=new ArrayList() ;
 	private int[] triangles;
 	
 	//生成信息
-	private Vector2 size;//长宽
-	private float minHeight = -10;
-	private float maxHeight = 10;    
+	//	private Vector2 size;//长宽
+	//	private float minHeight = -10;
+	//	private float maxHeight = 10;    
 
-	private float unitH;
+	//	private float unitH;
 
-	//面片mesh
+
 	private GameObject terrain;
 
     public string  test()
@@ -57,55 +58,50 @@ public class drawJterrain : MonoBehaviour {
        return terrain.name;
     }
 
-    public void initTrr(float _lat,float _lng, float endlat, float endlng, string _Trrname)
+    public void initTrr(float _northeastlat,float _northeastlng, float _southwestlat, float _southwestlng, string _Trrname)
     {
-        lat = _lat;
-        lng = _lng;
+
         Trrname = _Trrname;
 
 
         int leng = ((int)segment.x + 1) * ((int)segment.y + 1);
-        print(_lat+ "//" + _lng+ "//" + endlat+"//"+ endlng+"---"+_Trrname);
-        vertives = new Vector3[leng];
-        vtest = new Vector3[leng];////////////////////////////
 
+        vertives = new Vector3[leng];//用于存每个点的坐标
 
-        northeastlat = lat;// = -90;//+-90
-        northeastlng = lng;// = -180;//+-180
-        southwestlat = endlat;// = -90;//+-90
-        southwestlng = endlng;//= -180;//+-180
-        steplat = (southwestlat - northeastlat) / segment.x;
+        northeastlat = _northeastlat;// = -90;//+-90 东北角纬度
+        northeastlng = _northeastlng;// = -180;//+-180 东北角经度
+        southwestlat = _southwestlat;// = -90;//+-90 西南角纬度
+        southwestlng = _southwestlng;//= -180;//+-180 西南角经度
+        steplat = (southwestlat - northeastlat) / segment.x;//每段跨越的纬度
 
 
         Init(100, 100, (uint)segment.x, (uint)segment.y, -10, 10);
         GetUV();
         GetTriangles();
 
-        StartCoroutine(LoadJson(lat, lng));
+        StartCoroutine(LoadJson(northeastlat));
 
     }
   
 
   
 
-    public IEnumerator LoadJson(float lat,float lng)
+    public IEnumerator LoadJson(float lat)
 	{  
 	   if (indVertives >= vertives.Length)
 		 {
 		   /////////////////
 			Debug.Log("break!!!!!!!");
-			string sttt = "";
-
-
             DrawMesh();
 			yield break;
 		 }
 
-		ipaddress = "https://maps.googleapis.com/maps/api/elevation/json?path="; //path//locations
+		ipaddress = "https://maps.googleapis.com/maps/api/elevation/json?path="; //获取json数据,改为XML获取xml数据
         ipaddress +=lat +","+northeastlng +"|";
-        ipaddress += lat  +","+southwestlng ;
-        ipaddress += "&samples=" + (segment.y+1);
-        ipaddress +="&key=AIzaSyApPJ8CP4JxKWIW2vavwdRl6fnDvdcgCLk";
+        ipaddress += lat  +","+southwestlng ;//获取同一纬度下，东西经度之间的数据
+        ipaddress += "&samples=" + (segment.y+1)+"&key=";
+        ipaddress +=googleKey;//需要自己注册！！
+		print(ipaddress);
 		WWW www_data = new WWW(ipaddress);  
 		yield return www_data;  
 
@@ -122,11 +118,11 @@ public class drawJterrain : MonoBehaviour {
 				StrWwwData = www_data.text;    
 				JsonData GoogleJsonData = JsonMapper.ToObject(StrWwwData);
 
-                for (int i=0; i < GoogleJsonData["results"].Count ; i++)
+				for (int i=0; i < GoogleJsonData["results"].Count ; i++)
                 {
-                    int tempsss = +UnityEngine.Random.Range(0, 10);
-                  vertives[indVertives + i] = new Vector3(i*100/segment.x, float.Parse(GoogleJsonData["results"][i]["elevation"].ToString()) / 100, (indVertives / GoogleJsonData["results"].Count) * 100/segment.y);
-                    vtest[indVertives + i] = new Vector3(float.Parse(GoogleJsonData["results"][i]["location"]["lat"].ToString()), float.Parse(GoogleJsonData["results"][i]["elevation"].ToString()) / 100, float.Parse(GoogleJsonData["results"][i]["location"]["lng"].ToString()));
+
+					 vertives[indVertives + i] = new Vector3(i*100/segment.x, float.Parse(GoogleJsonData["results"][i]["elevation"].ToString()) / 100, (indVertives / GoogleJsonData["results"].Count) * 100/segment.y);
+		              //Vector3（x坐标，google数据中的高度，y坐标）
 
                 }
                 indVertives += GoogleJsonData["results"].Count;
@@ -134,7 +130,7 @@ public class drawJterrain : MonoBehaviour {
 
                 lat += steplat;
            
-                StartCoroutine(LoadJson(lat,lng));  
+                StartCoroutine(LoadJson(lat));  //获取下一纬度，东西经度之间的数据
 				StrWwwData = "";  				
 			}  
 			catch (Exception ex)  
@@ -154,10 +150,7 @@ public class drawJterrain : MonoBehaviour {
 	private void Init(float width, float height, uint segmentX, uint segmentY, int min, int max)
 	{
         print("init--segmentX" + segmentX);
-		size = new Vector2(width, height);
-		maxHeight = max;
-		minHeight = min;
-		unitH = maxHeight - minHeight;
+
 		segment = new Vector2(segmentX, segmentY);
 		if (terrain != null)
 		{
@@ -241,12 +234,6 @@ public class drawJterrain : MonoBehaviour {
 		return triangles;
 	}
 	/// 
-	///////////////////////////
-	
-	
-	
-	
-	/////////////////////////
-	// Update is called once per frame
+
 	
 }
