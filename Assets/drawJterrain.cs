@@ -167,11 +167,11 @@ public class drawJterrain : MonoBehaviour {
 		terrain.AddComponent<MeshRenderer>();
 
 
-//        if (diffuseMap == null)
-//        {
-//            diffuseMap = new Material(Shader.Find("Diffuse"));
-//        }
-//        terrain.GetComponent<Renderer>().material = diffuseMap;
+        if (diffuseMap == null)
+        {
+			diffuseMap = new Material(Shader.Find("Standard"));
+        }
+        terrain.GetComponent<Renderer>().material = diffuseMap;
 
         //给mesh 赋值
         mesh.Clear();
