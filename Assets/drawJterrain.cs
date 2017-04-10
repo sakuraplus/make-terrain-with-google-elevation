@@ -58,13 +58,17 @@ public class drawJterrain : MonoBehaviour {
        return terrain.name;
     }
 
-    public void initTrr(float _northeastlat,float _northeastlng, float _southwestlat, float _southwestlng, string _Trrname)
+    public void initTrr(float _northeastlat,float _northeastlng, float _southwestlat, float _southwestlng, string _Trrname,Vector2 _segment)
     {
 
         Trrname = _Trrname;
 
-
+		segment=_segment;
         int leng = ((int)segment.x + 1) * ((int)segment.y + 1);
+
+		//////////////测试倒序
+		//indVertives=leng-1;
+		/////////////////////////测试倒序
 
         vertives = new Vector3[leng];//用于存每个点的坐标
 
@@ -72,10 +76,11 @@ public class drawJterrain : MonoBehaviour {
         northeastlng = _northeastlng;// = -180;//+-180 东北角经度
         southwestlat = _southwestlat;// = -90;//+-90 西南角纬度
         southwestlng = _southwestlng;//= -180;//+-180 西南角经度
-        steplat = (southwestlat - northeastlat) / segment.x;//每段跨越的纬度
+        steplat =- (southwestlat - northeastlat) / segment.x;//每段跨越的纬度
+		//z正方向为北
 
 
-        Init(100, 100, (uint)segment.x, (uint)segment.y, -10, 10);
+        Init(100, 100, (uint)segment.x, (uint)segment.y, -10, 10);//mesh宽度
         GetUV();
         GetTriangles();
 
@@ -88,10 +93,11 @@ public class drawJterrain : MonoBehaviour {
 
     public IEnumerator LoadJson(float lat)
 	{  
-	   if (indVertives >= vertives.Length)
+		/////////测试倒序  if (indVertives < 0)
+	   if (indVertives >= vertives.Length)		  
 		 {
 		   /////////////////
-			Debug.Log("break!!!!!!!");
+			Debug.Log("Data complete!!!!!!!");
             DrawMesh();
 			yield break;
 		 }
@@ -117,16 +123,21 @@ public class drawJterrain : MonoBehaviour {
 		try{  
 				StrWwwData = www_data.text;    
 				JsonData GoogleJsonData = JsonMapper.ToObject(StrWwwData);
-
-				for (int i=0; i < GoogleJsonData["results"].Count ; i++)
+				//for (int i=GoogleJsonData["results"].Count-1; i >0; i--)/////测试倒序
+				for (int i=0; i < GoogleJsonData["results"].Count ; i++)		
                 {
 
-					 vertives[indVertives + i] = new Vector3(i*100/segment.x, float.Parse(GoogleJsonData["results"][i]["elevation"].ToString()) / 100, (indVertives / GoogleJsonData["results"].Count) * 100/segment.y);
-		              //Vector3（x坐标，google数据中的高度，y坐标）
+		
+
+					 //	 vertives[indVertives -GoogleJsonData["results"].Count + i]  ///测试倒序
+					 vertives[indVertives + i]= new Vector3(i*100/segment.x, float.Parse(GoogleJsonData["results"][i]["elevation"].ToString()) / 100, (indVertives / GoogleJsonData["results"].Count) * 100/segment.y);
+					 //100/x方向分段数=顶点坐标，高度/100=顶点z，为多边形的
+		              //Vector3（x坐标，google数据中的高度，z坐标，xz可能需要交换？？？或者倒序？）
+					  //现在东南西北好像反了ò。ó？
 
                 }
-                indVertives += GoogleJsonData["results"].Count;
-
+               // indVertives -= GoogleJsonData["results"].Count;/////////测试倒序
+				indVertives += GoogleJsonData["results"].Count;/////////测试倒序
 
                 lat += steplat;
            
@@ -149,7 +160,7 @@ public class drawJterrain : MonoBehaviour {
 	/// 
 	private void Init(float width, float height, uint segmentX, uint segmentY, int min, int max)
 	{
-        print("init--segmentX" + segmentX);
+   //     print("init--segmentX" + segmentX);
 
 		segment = new Vector2(segmentX, segmentY);
 		if (terrain != null)
@@ -190,7 +201,7 @@ public class drawJterrain : MonoBehaviour {
     }
 
 
-	//
+	//设定每个顶点的uv
     private Vector2[] GetUV()
 	{
         int sum = vertives.Length;
@@ -212,11 +223,12 @@ public class drawJterrain : MonoBehaviour {
 
 	private int[] GetTriangles()
 	{
-		int sum = Mathf.FloorToInt(segment.x * segment.y * 6);
+		int sum = Mathf.FloorToInt(segment.x * segment.y * 6);//每格两个三角形，6个顶点
 		triangles = new int[sum];
 		uint index = 0;
 		for (int i = 0; i < segment.y; i++)
 		{
+			//y对应z方向
 			for (int j = 0; j < segment.x; j++)
 			{
 				int role = Mathf.FloorToInt(segment.x) + 1;
@@ -229,6 +241,7 @@ public class drawJterrain : MonoBehaviour {
 				triangles[index + 4] = next;
 				triangles[index + 5] = next + 1;
 				index += 6;
+				//
 			}
 		}
 		return triangles;
