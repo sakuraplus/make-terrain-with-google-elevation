@@ -38,6 +38,9 @@ public class drawJterrain : MonoBehaviour {
     private Vector3[] vtest;///////////////////////////
 
 
+	float sizelat=100;
+	float  sizelng=100;
+
 
     private Vector2[] uvs;
 	//	private ArrayList   strfile=new ArrayList() ;
@@ -58,8 +61,10 @@ public class drawJterrain : MonoBehaviour {
        return terrain.name;
     }
 
-    public void initTrr(float _northeastlat,float _northeastlng, float _southwestlat, float _southwestlng, string _Trrname,Vector2 _segment)
+    public void initTrr(float _northeastlat,float _northeastlng, float _southwestlat, float _southwestlng, string _Trrname,Vector2 _segment,Vector2 _size)
     {
+		sizelat = _size.y;
+		sizelng = _size.x;
 
         Trrname = _Trrname;
 
@@ -72,6 +77,13 @@ public class drawJterrain : MonoBehaviour {
 
         vertives = new Vector3[leng];//用于存每个点的坐标
 
+
+		if (_northeastlng > 180) {
+			_northeastlng -=360 ;
+		}
+		if (_southwestlng > 180) {
+			_southwestlng -=360;
+		}
         northeastlat = _northeastlat;// = -90;//+-90 东北角纬度
         northeastlng = _northeastlng;// = -180;//+-180 东北角经度
         southwestlat = _southwestlat;// = -90;//+-90 西南角纬度
@@ -130,7 +142,7 @@ public class drawJterrain : MonoBehaviour {
 		
 
 					 //	 vertives[indVertives -GoogleJsonData["results"].Count + i]  ///测试倒序
-					 vertives[indVertives + i]= new Vector3(i*100/segment.x, float.Parse(GoogleJsonData["results"][i]["elevation"].ToString()) / 100, (indVertives / GoogleJsonData["results"].Count) * 100/segment.y);
+					vertives[indVertives + i]= new Vector3(i*sizelat /segment.x, float.Parse(GoogleJsonData["results"][i]["elevation"].ToString()) / 100, (indVertives / GoogleJsonData["results"].Count) * sizelng/segment.y);
 					 //100/x方向分段数=顶点坐标，高度/100=顶点z，为多边形的
 		              //Vector3（x坐标，google数据中的高度，z坐标，xz可能需要交换？？？或者倒序？）
 					  //现在东南西北好像反了ò。ó？
