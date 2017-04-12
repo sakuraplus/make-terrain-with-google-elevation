@@ -28,6 +28,8 @@ public class main : MonoBehaviour {
 	//  public   float distancelng = 2.0f;	//用于计算终点经纬度，算法有问题，先不用这个了
 	public Vector2 segment=new Vector2(5,5);//每块地图分段数
 
+	public Material matTrr;
+
 //    void OnCollisionEnter (Collision   theCollision)
 //	{
 //        Debug.Log("collision---"+theCollision.collider.name );
@@ -85,7 +87,7 @@ public class main : MonoBehaviour {
 		//print ("endlat-lat)/2=" + ttt+ "   cos (ttt)="+Mathf.Cos (ttt)+"  ///"+Mathf.Acos(ttt));
 		ttt= size.x * Mathf.Abs (Mathf.Cos(ttt ));
 		print ("Math.Abs (Math.Cos(ttt ))" + ttt);
-		size.y =ttt;
+		size.y =ttt * Mathf.Abs(steplng/steplat);
 
         print("steplat=" + steplat + "  steplng=" + steplng+" size="+size );//steplat0.5729578steplng3.71444
 
@@ -95,29 +97,31 @@ public class main : MonoBehaviour {
 		////////////////////////////////
 		//起点为左上块
 		//可能需要修改，z为经度，x为纬度
-		arrObj[0].AddComponent<drawJterrain>().initTrr(lat					,lng				,lat+steplat		,lng+steplng		, "Trr00",segment,size);
+		arrObj[0].AddComponent<drawJterrain>().initTrr(lat					,lng				,lat+steplat		,lng+steplng		, "Trr00",segment,size,matTrr);
         arrTrr[0] = GameObject.Find("Trr00");
-        arrObj[1].AddComponent<drawJterrain>().initTrr(lat+steplat		,lng		        ,lat+steplat*2	,lng+steplng		, "Trr01",segment,size);
+		arrObj[1].AddComponent<drawJterrain>().initTrr(lat+steplat		,lng		        ,lat+steplat*2	,lng+steplng		, "Trr01",segment,size,matTrr);
         arrTrr[1] = GameObject.Find("Trr01");
-        arrObj[2].AddComponent<drawJterrain>().initTrr(lat+steplat*2 ,lng				,lat+steplat*3	,lng+steplng		, "Trr02",segment,size);
+		arrObj[2].AddComponent<drawJterrain>().initTrr(lat+steplat*2 ,lng				,lat+steplat*3	,lng+steplng		, "Trr02",segment,size,matTrr);
         arrTrr[2] = GameObject.Find("Trr02");
 
-		arrObj[3].AddComponent<drawJterrain>().initTrr(lat					, lng+steplng	 , lat+steplat		, lng+steplng*2 ,  "Trr10",segment,size);
+		arrObj[3].AddComponent<drawJterrain>().initTrr(lat					, lng+steplng	 , lat+steplat		, lng+steplng*2 ,  "Trr10",segment,size,matTrr);
         arrTrr[3] = GameObject.Find("Trr10");
-		arrObj[4].AddComponent<drawJterrain>().initTrr(lat+steplat		, lng+steplng	 , lat+steplat*2	, lng +steplng*2,  "Trr11",segment,size);
+		arrObj[4].AddComponent<drawJterrain>().initTrr(lat+steplat		, lng+steplng	 , lat+steplat*2	, lng +steplng*2,  "Trr11",segment,size,matTrr);
         arrTrr[4] = GameObject.Find("Trr11");
-		arrObj[5].AddComponent<drawJterrain>().initTrr(lat+steplat*2 , lng+steplng	 , lat+steplat*3	, lng +steplng*2,  "Trr12",segment,size);
+		arrObj[5].AddComponent<drawJterrain>().initTrr(lat+steplat*2 , lng+steplng	 , lat+steplat*3	, lng +steplng*2,  "Trr12",segment,size,matTrr);
         arrTrr[5] = GameObject.Find("Trr12");
 
 
-		arrObj[6].AddComponent<drawJterrain>().initTrr(lat				 	, lng+steplng*2, lat+steplat	, lng+steplng*3 , "Trr20",segment,size);
+		arrObj[6].AddComponent<drawJterrain>().initTrr(lat				 	, lng+steplng*2, lat+steplat	, lng+steplng*3 , "Trr20",segment,size,matTrr);
         arrTrr[6] = GameObject.Find("Trr20");
-		arrObj[7].AddComponent<drawJterrain>().initTrr(lat+steplat		, lng+steplng*2, lat+steplat*2, lng+steplng*3, "Trr21",segment,size);
+		arrObj[7].AddComponent<drawJterrain>().initTrr(lat+steplat		, lng+steplng*2, lat+steplat*2, lng+steplng*3, "Trr21",segment,size,matTrr);
         arrTrr[7] = GameObject.Find("Trr21");
-		arrObj[8].AddComponent<drawJterrain>().initTrr(lat+steplat*2 , lng+steplng*2, lat+steplat*3, lng+steplng*3,  "Trr22",segment,size);
+		arrObj[8].AddComponent<drawJterrain>().initTrr(lat+steplat*2 , lng+steplng*2, lat+steplat*3, lng+steplng*3,  "Trr22",segment,size,matTrr);
         arrTrr[8] = GameObject.Find("Trr22");
 
-
+		for(int i=0;i<arrTrr.Length;i++){
+			arrTrr [i].transform.parent = terrmanager.transform;
+		}
 
 		arrTrr[0].transform.Translate(new Vector3(-1*size.y, -50, size.x));
 		arrTrr[1].transform.Translate(new Vector3(-1*size.y, -50, 0));
