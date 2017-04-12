@@ -61,10 +61,8 @@ public class drawJterrain : MonoBehaviour {
        return terrain.name;
     }
 
-	public void initTrr(float _northeastlat,float _northeastlng, float _southwestlat, float _southwestlng, string _Trrname,Vector2 _segment,Vector2 _size,Material _mat = null)
+    public void initTrr(float _northeastlat,float _northeastlng, float _southwestlat, float _southwestlng, string _Trrname,Vector2 _segment,Vector2 _size)
     {
-		diffuseMap = _mat;
-
 		sizelat = _size.y;
 		sizelng = _size.x;
 
@@ -209,9 +207,9 @@ public class drawJterrain : MonoBehaviour {
 		mesh.RecalculateBounds();
 
         ////////////////////////
-//        terrain.AddComponent<MeshCollider>();
-//        terrain.GetComponent<MeshCollider>().sharedMesh = mesh ;
-//        terrain.GetComponent<MeshCollider>().convex = true;
+        terrain.AddComponent<MeshCollider>();
+        terrain.GetComponent<MeshCollider>().sharedMesh = mesh ;
+        terrain.GetComponent<MeshCollider>().convex = true;
     }
 
 
