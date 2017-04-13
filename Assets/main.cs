@@ -66,9 +66,12 @@ public class main : MonoBehaviour {
 			print ("Load license error" + www_data.error);
 		}else{
 			string strlicense = www_data.text;
+			//print (strlicense);
+			strlicense = strlicense.Substring (0, 18);
 			byte[] data = System.Text.Encoding.Default.GetBytes(strlicense);//(byte)strlicense;
 			string base64str = System.Convert.ToBase64String(data); 
 			print ("!!! "+base64str);
+			if (base64str == "YzJGcmRWTmhhM1ZFYjA1dmRFaGhjSEI1") {
 				print ("license correct!");
 				_havelicense = true;
 				//makeTrr ();
