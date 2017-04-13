@@ -16,7 +16,7 @@ public class drawJterrain : MonoBehaviour {
 	GameObject Player ;
 	
 	string  ipaddress = "https://maps.googleapis.com/maps/api/elevation/json?locations="; 
-	public string googleKey ="AIzaSyApPJ8CP4JxKWIW2vavwdRl6fnDvdcgCLk";//需要自己注册！！
+	public string googleKey ="AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";//需要自己注册！！
 	string StrWwwData;
 //		public float lat = 40.00f;//+-90
 //		public float lng = 116.00f;//+-180
@@ -61,8 +61,10 @@ public class drawJterrain : MonoBehaviour {
        return terrain.name;
     }
 
-    public void initTrr(float _northeastlat,float _northeastlng, float _southwestlat, float _southwestlng, string _Trrname,Vector2 _segment,Vector2 _size)
+	public void initTrr(float _northeastlat,float _northeastlng, float _southwestlat, float _southwestlng, string _Trrname,Vector2 _segment,Vector2 _size, Material _matTrr = null)
     {
+		diffuseMap = _matTrr;
+
 		sizelat = _size.y;
 		sizelng = _size.x;
 
@@ -207,9 +209,9 @@ public class drawJterrain : MonoBehaviour {
 		mesh.RecalculateBounds();
 
         ////////////////////////
-        terrain.AddComponent<MeshCollider>();
-        terrain.GetComponent<MeshCollider>().sharedMesh = mesh ;
-        terrain.GetComponent<MeshCollider>().convex = true;
+//        terrain.AddComponent<MeshCollider>();
+//        terrain.GetComponent<MeshCollider>().sharedMesh = mesh ;
+//        terrain.GetComponent<MeshCollider>().convex = true;
     }
 
 
