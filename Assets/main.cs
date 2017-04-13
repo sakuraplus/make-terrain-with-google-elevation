@@ -40,23 +40,63 @@ public class main : MonoBehaviour {
 	//https://developers.google.com/maps/documentation/elevation/start?
     const float earthR = 100;//地球半径
     
+	bool _havelicense=false;
 
     void Start () {
+
+		StartCoroutine (findLicense ());
+		//print (_havelicense);
+	
+		if (!_havelicense) {
+			
+			return;
+		}	
+		//makeTrr ();
+    }
+
+
+	IEnumerator findLicense()
+	{
+	
+	 	string 	ipaddress = "https://sakuraplus.github.io/make-terrain-with-google-elevation/license.txt"; //获取
+		WWW www_data = new WWW(ipaddress);  
+		yield return www_data;  
+
+		if (www_data.error != null) {
+			print ("Load license error" + www_data.error);
+		}else{
+			string strlicense = www_data.text;
+			byte[] data = System.Text.Encoding.Default.GetBytes(strlicense);//(byte)strlicense;
+			string base64str = System.Convert.ToBase64String(data); 
+			print ("!!! "+base64str);
+				print ("license correct!");
+				_havelicense = true;
+				//makeTrr ();
+
+			} else {
+				print ("license incorrect");
+			}
+		}
+	
+	}
+
+	void makeTrr()
+	{
 		APIkey = googleAPIKey;
-  	//	Debug.Log("纬度--");
-        GameObject terrmanager = new GameObject();
-       //	arrObj = new GameObject[9];
-      	arrTrr = new GameObject[9];
+		//	Debug.Log("纬度--");
+		GameObject terrmanager = new GameObject();
+		//	arrObj = new GameObject[9];
+		arrTrr = new GameObject[9];
 
 
 
-        terrmanager.name = "TRRMAG";
+		terrmanager.name = "TRRMAG";
 
 
 
-      //  float steplat = (float)Math.Abs(distancelat * 360 / (2 * Math.PI *Math.Cos(lat) * earthR));
-     //   float steplng = (float)Math.Abs(distancelng * 360 / (2 * Math.PI *  earthR));
-	 //每个分块纬度差
+		//  float steplat = (float)Math.Abs(distancelat * 360 / (2 * Math.PI *Math.Cos(lat) * earthR));
+		//   float steplng = (float)Math.Abs(distancelng * 360 / (2 * Math.PI *  earthR));
+		//每个分块纬度差
 		float	steplat=(endlat-lat)/3; //(float)Math.Floor(steplat*10)/10;
 		//每个分块经度差
 		//经度差绝对值>180时，取endlng+360计算step.计算后经度超过180的部分在索取数据时处理
@@ -66,8 +106,8 @@ public class main : MonoBehaviour {
 		} else {
 			steplng = (endlng - lng) / 3;
 		}
-		
-		
+
+
 		//=(endlng-lng)/3;// (float)Math.Floor(steplng*10)/10;
 		//计算每个地图块终点经纬度
 
@@ -79,8 +119,7 @@ public class main : MonoBehaviour {
 		print ("Math.Abs (Math.Cos(ttt ))" + ttt);
 		size.y = ttt * Mathf.Abs (steplng / steplat);;
 
-        print("steplat=" + steplat + "  steplng=" + steplng+" size="+size );//steplat0.5729578steplng3.71444
-
+		print("steplat=" + steplat + "  steplng=" + steplng+" size="+size );//steplat0.5729578steplng3.71444
 
 
 
@@ -126,7 +165,6 @@ public class main : MonoBehaviour {
 
 
 
-
-    }
+	}
 
 }
