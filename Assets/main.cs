@@ -130,44 +130,47 @@ public class main : MonoBehaviour {
 		//起点为左上块
 		//可能需要修改，z为经度，x为纬度
 		terrmanager.AddComponent<drawJterrain>().initTrr(lat,lng,lat+steplat,lng+steplng, "Trr00",segment,size,matTrr);
-		terrmanager.AddComponent<drawJterrain>().initTrr(lat+steplat,lng,lat+steplat*2	,lng+steplng, "Trr01",segment,size,matTrr);
-		terrmanager.AddComponent<drawJterrain>().initTrr(lat+steplat*2 ,lng,lat+steplat*3	,lng+steplng, "Trr02",segment,size,matTrr);
-		terrmanager.AddComponent<drawJterrain>().initTrr(lat, lng+steplng, lat+steplat, lng+steplng*2 ,  "Trr10",segment,size,matTrr);
-		terrmanager.AddComponent<drawJterrain>().initTrr(lat+steplat, lng+steplng, lat+steplat*2, lng +steplng*2,  "Trr11",segment,size,matTrr);
-		terrmanager.AddComponent<drawJterrain>().initTrr(lat+steplat*2 , lng+steplng, lat+steplat*3, lng +steplng*2,  "Trr12",segment,size,matTrr);
-		terrmanager.AddComponent<drawJterrain>().initTrr(lat, lng+steplng*2, lat+steplat	, lng+steplng*3 , "Trr20",segment,size,matTrr);
-		terrmanager.AddComponent<drawJterrain>().initTrr(lat+steplat, lng+steplng*2, lat+steplat*2, lng+steplng*3, "Trr21",segment,size,matTrr);
-		terrmanager.AddComponent<drawJterrain>().initTrr(lat+steplat*2 , lng+steplng*2, lat+steplat*3, lng+steplng*3,  "Trr22",segment,size,matTrr);
+//		terrmanager.AddComponent<drawJterrain>().initTrr(lat+steplat,lng,lat+steplat*2	,lng+steplng, "Trr01",segment,size,matTrr);
+//		terrmanager.AddComponent<drawJterrain>().initTrr(lat+steplat*2 ,lng,lat+steplat*3	,lng+steplng, "Trr02",segment,size,matTrr);
+//		terrmanager.AddComponent<drawJterrain>().initTrr(lat, lng+steplng, lat+steplat, lng+steplng*2 ,  "Trr10",segment,size,matTrr);
+//		terrmanager.AddComponent<drawJterrain>().initTrr(lat+steplat, lng+steplng, lat+steplat*2, lng +steplng*2,  "Trr11",segment,size,matTrr);
+//		terrmanager.AddComponent<drawJterrain>().initTrr(lat+steplat*2 , lng+steplng, lat+steplat*3, lng +steplng*2,  "Trr12",segment,size,matTrr);
+//		terrmanager.AddComponent<drawJterrain>().initTrr(lat, lng+steplng*2, lat+steplat	, lng+steplng*3 , "Trr20",segment,size,matTrr);
+//		terrmanager.AddComponent<drawJterrain>().initTrr(lat+steplat, lng+steplng*2, lat+steplat*2, lng+steplng*3, "Trr21",segment,size,matTrr);
+//		terrmanager.AddComponent<drawJterrain>().initTrr(lat+steplat*2 , lng+steplng*2, lat+steplat*3, lng+steplng*3,  "Trr22",segment,size,matTrr);
 
 
 
 		arrTrr[0] = GameObject.Find("Trr00");
-		arrTrr[1] = GameObject.Find("Trr01");
-		arrTrr[2] = GameObject.Find("Trr02");
-		arrTrr[3] = GameObject.Find("Trr10");
-		arrTrr[4] = GameObject.Find("Trr11");
-		arrTrr[5] = GameObject.Find("Trr12");
-		arrTrr[6] = GameObject.Find("Trr20");
-		arrTrr[7] = GameObject.Find("Trr21");
-		arrTrr[8] = GameObject.Find("Trr22");
-
-		for(int i=0;i<arrTrr.Length;i++){
-			arrTrr [i].transform.parent = terrmanager.transform;
-		}
+//		arrTrr[1] = GameObject.Find("Trr01");
+//		arrTrr[2] = GameObject.Find("Trr02");
+//		arrTrr[3] = GameObject.Find("Trr10");
+//		arrTrr[4] = GameObject.Find("Trr11");
+//		arrTrr[5] = GameObject.Find("Trr12");
+//		arrTrr[6] = GameObject.Find("Trr20");
+//		arrTrr[7] = GameObject.Find("Trr21");
+//		arrTrr[8] = GameObject.Find("Trr22");
+//
+//		for(int i=0;i<arrTrr.Length;i++){
+//			arrTrr [i].transform.parent = terrmanager.transform;
+//		}
 
 		arrTrr[0].transform.Translate(new Vector3(-1*size.y, -50, size.x));
-		arrTrr[1].transform.Translate(new Vector3(-1*size.y, -50, 0));
-		arrTrr[2].transform.Translate(new Vector3(-1*size.y , -50, -1*size.x));
-		arrTrr[3].transform.Translate(new Vector3(0		, -50, size.x));
-		arrTrr[4].transform.Translate(new Vector3(0		, -50, 0));
-		arrTrr[5].transform.Translate(new Vector3(0		 , -50,-1*size.x));
-		arrTrr[6].transform.Translate(new Vector3(size.y	, -50, size.x));
-		arrTrr[7].transform.Translate(new Vector3(size.y	, -50 ,0));
-		arrTrr[8].transform.Translate(new Vector3(size.y	 , -50,-1*size.x));
+//		arrTrr[1].transform.Translate(new Vector3(-1*size.y, -50, 0));
+//		arrTrr[2].transform.Translate(new Vector3(-1*size.y , -50, -1*size.x));
+//		arrTrr[3].transform.Translate(new Vector3(0		, -50, size.x));
+//		arrTrr[4].transform.Translate(new Vector3(0		, -50, 0));
+//		arrTrr[5].transform.Translate(new Vector3(0		 , -50,-1*size.x));
+//		arrTrr[6].transform.Translate(new Vector3(size.y	, -50, size.x));
+//		arrTrr[7].transform.Translate(new Vector3(size.y	, -50 ,0));
+//		arrTrr[8].transform.Translate(new Vector3(size.y	 , -50,-1*size.x));
 
 
 
 
 	}
+
+
+
 
 }

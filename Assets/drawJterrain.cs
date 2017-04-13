@@ -3,13 +3,9 @@ using UnityEditor;
 using System.Collections;  
 using LitJson;  
 
-
-
 using System;
 using System.Text;
 using System.IO;
-
-
 
 public class drawJterrain : MonoBehaviour {
 	
@@ -44,15 +40,9 @@ public class drawJterrain : MonoBehaviour {
 
 
     private Vector2[] uvs;
-	//	private ArrayList   strfile=new ArrayList() ;
 	private int[] triangles;
 	
-	//生成信息
-	//	private Vector2 size;//长宽
-	//	private float minHeight = -10;
-	//	private float maxHeight = 10;    
 
-	//	private float unitH;
 	string tempstr="";//打印测试数据用
 
 	private GameObject terrain;
@@ -99,8 +89,8 @@ public class drawJterrain : MonoBehaviour {
         GetUV();
         GetTriangles();
 
-        StartCoroutine(LoadJson(southeastlat));//多边形顶点从左south开始
-		//testVertives();//测试segment xy不同时生成mesh
+       // StartCoroutine(LoadJson(southeastlat));//多边形顶点从左south开始
+		testVertives();//测试segment xy不同时生成mesh
 
     }
   
@@ -118,7 +108,7 @@ public class drawJterrain : MonoBehaviour {
 				//	 vertives[indVertives -GoogleJsonData["results"].Count + i]  ///测试倒序
 				vertives [indVertives + i] = 
 				new Vector3 (i * sizelat / segment.x,
-						rm.Next (100) -50, 
+						rm.Next (2) , 
 						(indVertives / (segment.x + 1)) * sizelng / segment.y);
 				//100/x方向分段数=顶点坐标，高度/100=顶点z，为多边形的
 				tempstr += vertives [indVertives + i].ToString ();
@@ -128,7 +118,9 @@ public class drawJterrain : MonoBehaviour {
 		}
 		print(tempstr);
 		DrawMesh();
+		StartCoroutine(	loadimg ());
 	}
+
 
     public IEnumerator LoadJson(float lat)
 	{  
@@ -193,13 +185,58 @@ public class drawJterrain : MonoBehaviour {
 	}//end LoadFile
 
   
+	IEnumerator loadimg()
+	{
+
+		float centerlat = (southeastlat + northwestlat) / 2;
+		float centerlng = (southeastlng + northwestlng) / 2;
+
+
+
+		float lerplat=Math.Abs(southeastlat - northwestlat);
+		int defaultmapsize = 512;
+		int tempsize =(int)Math.Abs( (defaultmapsize * 360 / 256) / lerplat);
+		int nextpoweroftwo =(int)Mathf.ClosestPowerOfTwo(tempsize);
+		int zoommap = (int)Math.Floor (Mathf.Log(nextpoweroftwo ,2));
+		print ("tempsize= "+tempsize+"  lerplat= " + lerplat + "  nextpoweroftwo= " + nextpoweroftwo);
+
+		print("Mathf  8== "+Mathf.ClosestPowerOfTwo(8)+"   7=="+Mathf.ClosestPowerOfTwo(7)+"   11=="+Mathf.ClosestPowerOfTwo(12));
+		print("Mathf  8== "+Mathf.Log(4,2)+"   7=="+Mathf.Log (7,2)+"   16=="+Mathf.Log(16,2));
+		int sizemapx=(int)Math.Abs( (southeastlat - northwestlat) *256* Math.Pow (2, zoommap)/360);//512;//lng
+		int sizemapy=(int)Math.Abs ( sizemapx*(sizelat/sizelng));
+		string strmaptype="roadmap";
+
+		string 	ipaddress = "https://maps.googleapis.com/maps/api/staticmap?center="; //获取
+		ipaddress+=centerlat+","+centerlng+"&zoom="+zoommap;
+		ipaddress += "&size=" + sizemapy + "x" + sizemapx + "&maptype="+strmaptype + "&key=";
+		ipaddress += "AIzaSyCljEOXoKPrh9x-xAbpVirQN4fKeI1H9mA";
+
+		print ("loadimg  "+ipaddress );
+		WWW www_data = new WWW(ipaddress);  
+		yield return www_data;  
+
+		if (www_data.error != null) {
+			print ("Load img error" + www_data.error);
+		}else{
+			print ("load "+www_data );
+			//text
+			Texture2D tex2d = www_data.texture;  
+			//将图片保存至缓存路径  
+			byte[] bytes = tex2d.EncodeToPNG();  
+			//byte[] bytes = texture2D.EncodeToPNG();
+			File.WriteAllBytes("Assets/test.png", bytes);
+		
+		}
+
+	}
+
+
 
 	///////////////////////////
 	/// 
 	private void Init(float width, float height, uint segmentX, uint segmentY, int min, int max)
 	{
-   //     print("init--segmentX" + segmentX);
-
+ 
 		segment = new Vector2(segmentX, segmentY);
 		if (terrain != null)
 		{
