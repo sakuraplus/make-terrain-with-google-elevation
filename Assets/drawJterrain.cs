@@ -14,19 +14,20 @@ using System.IO;
 public class drawJterrain : MonoBehaviour {
 	
 	GameObject Player ;
-	
+
 	string  ipaddress = "https://maps.googleapis.com/maps/api/elevation/json?locations="; 
-	public string googleKey ="AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";//需要自己注册！！
+	string googleKey = main.APIkey;// = "AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";//需要自己注册！！
+	//;//"AIzaSyApPJ8CP4JxKWIW2vavwdRl6fnDvdcgCLk"
 	string StrWwwData;
 //		public float lat = 40.00f;//+-90
 //		public float lng = 116.00f;//+-180
     float steplat ;//= 116.00f;//+-180
     public string Trrname;
 
-    public  float northeastlat;// = -90;//+-90
-    public  float northeastlng;// = -180;//+-180
-    public  float southwestlat;// = -90;//+-90
-    public  float southwestlng;//= -180;//+-180
+    public  float northwestlat;// = -90;//+-90
+    public  float northwestlng;// = -180;//+-180
+    public  float southeastlat;// = -90;//+-90
+    public  float southeastlng;//= -180;//+-180
 
 	Vector2 segment=new Vector2(3,3);//每块分段数量
 	
@@ -52,7 +53,7 @@ public class drawJterrain : MonoBehaviour {
 	//	private float maxHeight = 10;    
 
 	//	private float unitH;
-
+	string tempstr="";//打印测试数据用
 
 	private GameObject terrain;
 
@@ -61,7 +62,7 @@ public class drawJterrain : MonoBehaviour {
        return terrain.name;
     }
 
-	public void initTrr(float _northeastlat,float _northeastlng, float _southwestlat, float _southwestlng, string _Trrname,Vector2 _segment,Vector2 _size, Material _matTrr = null)
+	public void initTrr(float _northwestlat,float _northwestlng, float _southeastlat, float _southeastlng, string _Trrname,Vector2 _segment,Vector2 _size, Material _matTrr = null)
     {
 		diffuseMap = _matTrr;
 
@@ -80,30 +81,54 @@ public class drawJterrain : MonoBehaviour {
         vertives = new Vector3[leng];//用于存每个点的坐标
 
 
-		if (_northeastlng > 180) {
-			_northeastlng -=360 ;
+		if (_northwestlng > 180) {
+			_northwestlng -=360 ;
 		}
-		if (_southwestlng > 180) {
-			_southwestlng -=360;
+		if (_southeastlng > 180) {
+			_southeastlng -=360;
 		}
-        northeastlat = _northeastlat;// = -90;//+-90 东北角纬度
-        northeastlng = _northeastlng;// = -180;//+-180 东北角经度
-        southwestlat = _southwestlat;// = -90;//+-90 西南角纬度
-        southwestlng = _southwestlng;//= -180;//+-180 西南角经度
-        steplat =- (southwestlat - northeastlat) / segment.x;//每段跨越的纬度
+        northwestlat = _northwestlat;// = -90;//+-90 西北角纬度
+        northwestlng = _northwestlng;// = -180;//+-180西北角经度
+        southeastlat = _southeastlat;// = -90;//+-90 东南角纬度
+        southeastlng = _southeastlng;//= -180;//+-180 东南角经度
+        steplat = ( northwestlat-southeastlat ) / segment.y;//每段跨越的纬度
 		//z正方向为北
-
+		print (Trrname+"-init-"+northwestlat+","+_northwestlng+"//"+_southeastlat+","+_southeastlng+" step="+steplat);
 
         Init(100, 100, (uint)segment.x, (uint)segment.y, -10, 10);//mesh宽度
         GetUV();
         GetTriangles();
 
-        StartCoroutine(LoadJson(northeastlat));
+        StartCoroutine(LoadJson(southeastlat));//多边形顶点从左south开始
+		//testVertives();//测试segment xy不同时生成mesh
 
     }
   
 
-  
+  	void testVertives()
+	{
+		System.Random rm=new System.Random();
+		for (int indVertives = 0; indVertives < vertives.Length; indVertives += ((int)segment.x + 1))
+		{
+			for (int i = 0; i <(segment.x + 1); i++) {
+
+				//print (GoogleJsonData ["results"].Count);
+
+				//float temptest=System.Random. Random.Range(10f,100f);
+				//	 vertives[indVertives -GoogleJsonData["results"].Count + i]  ///测试倒序
+				vertives [indVertives + i] = 
+				new Vector3 (i * sizelat / segment.x,
+						rm.Next (100) -50, 
+						(indVertives / (segment.x + 1)) * sizelng / segment.y);
+				//100/x方向分段数=顶点坐标，高度/100=顶点z，为多边形的
+				tempstr += vertives [indVertives + i].ToString ();
+
+
+			}
+		}
+		print(tempstr);
+		DrawMesh();
+	}
 
     public IEnumerator LoadJson(float lat)
 	{  
@@ -111,17 +136,17 @@ public class drawJterrain : MonoBehaviour {
 	   if (indVertives >= vertives.Length)		  
 		 {
 		   /////////////////
-			Debug.Log("Data complete!!!!!!!");
+			Debug.Log(Trrname + "Data complete!!!!!!!"+tempstr );
             DrawMesh();
 			yield break;
 		 }
 
 		ipaddress = "https://maps.googleapis.com/maps/api/elevation/json?path="; //获取json数据,改为XML获取xml数据
-        ipaddress +=lat +","+northeastlng +"|";
-        ipaddress += lat  +","+southwestlng ;//获取同一纬度下，东西经度之间的数据
-        ipaddress += "&samples=" + (segment.y+1)+"&key=";
+        ipaddress +=lat +","+northwestlng +"|";
+        ipaddress += lat  +","+southeastlng ;//获取同一纬度下，东西经度之间的数据
+        ipaddress += "&samples=" + (segment.x+1)+"&key=";
         ipaddress +=googleKey;//需要自己注册！！
-		print(ipaddress);
+		print(Trrname+"--"+ipaddress);
 		WWW www_data = new WWW(ipaddress);  
 		yield return www_data;  
 
@@ -129,7 +154,8 @@ public class drawJterrain : MonoBehaviour {
 		////////////////////////////
 		if (www_data.error != null)    
 		{    
-			Debug.Log("error :" + www_data.error );
+			Debug.Log("error :"+Trrname +"/"+indVertives +"-" + www_data.error );
+
 			StrWwwData =  "error :" + www_data.error;    
 		}    
 		else    
@@ -146,13 +172,11 @@ public class drawJterrain : MonoBehaviour {
 					 //	 vertives[indVertives -GoogleJsonData["results"].Count + i]  ///测试倒序
 					vertives[indVertives + i]= new Vector3(i*sizelat /segment.x, float.Parse(GoogleJsonData["results"][i]["elevation"].ToString()) / 100, (indVertives / GoogleJsonData["results"].Count) * sizelng/segment.y);
 					 //100/x方向分段数=顶点坐标，高度/100=顶点z，为多边形的
-		              //Vector3（x坐标，google数据中的高度，z坐标，xz可能需要交换？？？或者倒序？）
-					  //现在东南西北好像反了ò。ó？
+		            tempstr +=GoogleJsonData["results"][i]["location"]["lat"].ToString()+","+GoogleJsonData["results"][i]["location"]["lng"].ToString()+vertives[indVertives + i].ToString ();//测试数据
 
                 }
-               // indVertives -= GoogleJsonData["results"].Count;/////////测试倒序
-				indVertives += GoogleJsonData["results"].Count;/////////测试倒序
-
+              
+				indVertives =indVertives+(int)segment.x+1;//+= GoogleJsonData["results"].Count;/////////
                 lat += steplat;
            
                 StartCoroutine(LoadJson(lat));  //获取下一纬度，东西经度之间的数据

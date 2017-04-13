@@ -14,51 +14,41 @@ public class main : MonoBehaviour {
     GameObject terrmanager;//= new GameObject();
    // GameObject[] arrObj;// = new GameObject[9];
     GameObject[] arrTrr;//= new GameObject[9];
+	[SerializeField,HeaderAttribute ("latitude and longitude of the northwest")]
 	[Range (-90,90)]
 	public   float lat = 30;			//起点纬度，北极90，南极-90
 	[Range (-180,180)]
 	public   float lng = 70;			//起点经度，英国东方为正，应该西方为负
+
+	[SerializeField,HeaderAttribute ("latitude and longitude of the southeast")]
 	[Range (-90,90)]
 	public   float endlat = 20;			//终点纬度
 	[Range (-180,180)]
 	public   float endlng = 90;			//终点经度
 
+	[SerializeField,HeaderAttribute ("size of the mesh")]
 	public Vector2 size = new Vector2 (100, 100);
-	//public   float distancelat = 2.0f;	//距离，根据起始点经纬度计算 起始点距离外经纬度，
-	//  public   float distancelng = 2.0f;	//用于计算终点经纬度，算法有问题，先不用这个了
+
+	[SerializeField,HeaderAttribute ("segment one mesh block in  lng,lat")]
 	public Vector2 segment=new Vector2(5,5);//每块地图分段数
-
+	[SerializeField,HeaderAttribute ("Default material of each block")]
 	public Material matTrr;			//地形预设材质
+	[SerializeField,HeaderAttribute ("Get a KEY at developers.google.com/maps/documentation/elevation")]
+	string  googleAPIKey="AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";
 
-//    void OnCollisionEnter (Collision   theCollision)
-//	{
-//        Debug.Log("collision---"+theCollision.collider.name );
-//		
-//	}
-//
-//
-//    void OnTriggerEnter(Collider collider)
-//    {
-//        //进入触发器执行的代码
-//        Debug.Log("collider--"+collider.name);
-//    }
-
+	public static string APIkey;
+	//https://developers.google.com/maps/documentation/elevation/start?
     const float earthR = 100;//地球半径
-
     
 
     void Start () {
-
+		APIkey = googleAPIKey;
   	//	Debug.Log("纬度--");
         GameObject terrmanager = new GameObject();
        //	arrObj = new GameObject[9];
       	arrTrr = new GameObject[9];
 
-//        for(int i=0;i<9;i++)
-//        {
-//            arrObj[i] = new GameObject();
-//            arrObj[i].name = "gameobjTrr" + i;           
-//        }
+
 
         terrmanager.name = "TRRMAG";
 
@@ -135,42 +125,6 @@ public class main : MonoBehaviour {
 
 
 
-//		lat+-=steplat;
-//		lng+=steplng;
-		///////////////////////////////
-//		arrObj[0].AddComponent<drawJterrain>().initTrr(lat + steplat, lng-steplng, lat , lng , "Trr00",segment);
-//        arrTrr[0] = GameObject.Find("Trr00");
-//        arrObj[1].AddComponent<drawJterrain>().initTrr(lat + steplat, lng            , lat , lng + steplng, "Trr01",segment);
-//        arrTrr[1] = GameObject.Find("Trr01");
-//        arrObj[2].AddComponent<drawJterrain>().initTrr(steplat + lat, lng+steplng, lat, lng + 2*steplng, "Trr02",segment);
-//        arrTrr[2] = GameObject.Find("Trr02");
-//
-//		arrObj[3].AddComponent<drawJterrain>().initTrr(lat, lng-steplng, lat-steplat , lng ,  "Trr10",segment);
-//        arrTrr[3] = GameObject.Find("Trr10");
-//		arrObj[4].AddComponent<drawJterrain>().initTrr(lat, lng            , lat-steplat , lng +steplng,  "Trr11",segment);
-//        arrTrr[4] = GameObject.Find("Trr11");
-//		arrObj[5].AddComponent<drawJterrain>().initTrr(lat, lng+steplng, lat-steplat , lng +2*steplng,  "Trr12",segment);
-//        arrTrr[5] = GameObject.Find("Trr12");
-//
-//
-//		arrObj[6].AddComponent<drawJterrain>().initTrr(lat-steplat, lng-steplng, lat-2*steplat , lng , "Trr20",segment);
-//        arrTrr[6] = GameObject.Find("Trr20");
-//		arrObj[7].AddComponent<drawJterrain>().initTrr(lat-steplat, lng            , lat-2*steplat , lng+steplng , "Trr21",segment);
-//        arrTrr[7] = GameObject.Find("Trr21");
-//		arrObj[8].AddComponent<drawJterrain>().initTrr(lat-steplat, lng+steplng, lat-2*steplat , lng+2*steplng ,  "Trr22",segment);
-//        arrTrr[8] = GameObject.Find("Trr22");
-//
-//
-//        arrTrr[0].transform.Translate(new Vector3(-100, -50, -100));
-//        arrTrr[1].transform.Translate(new Vector3(0     , -50, -100));
-//        arrTrr[2].transform.Translate(new Vector3(100 , -50, -100));
-//        arrTrr[3].transform.Translate(new Vector3(-100, -50, 0));
-//        arrTrr[4].transform.Translate(new Vector3(0     , -50, 0));
-//        arrTrr[5].transform.Translate(new Vector3(100 , -50, 0));
-//        arrTrr[6].transform.Translate(new Vector3(-100, -50, 100));
-//        arrTrr[7].transform.Translate(new Vector3(     0, -50 ,100));
-//        arrTrr[8].transform.Translate(new Vector3(100 , -50, 100));
-//		////////////////////////////////////////
 
 
     }
