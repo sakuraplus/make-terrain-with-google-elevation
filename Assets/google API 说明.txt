@@ -26,6 +26,7 @@ json格式
 静态地图服务：
 
 https://maps.googleapis.com/maps/api/staticmap?center=20,92&zoom=6&size=500x500&maptype=roadmap&key=AIzaSyDTM6sg5VMA7jrSvZ3MCyvK16RESl1UwSo
+AIzaSyA4BrG5z3_ZwBk8PopGOUMhw62VpU30PFE
 
 center：中心点经纬度
 zoom：缩放比例，需要根据地图范围计算
@@ -58,3 +59,10 @@ Trr11Data complete!!!!!!!17,90(0.0, -23.6, 0.0) ; 17.0086791794542,91.3333127406
 
 
 
+https://maps.googleapis.com/maps/api/elevation/xml?path=36.578581,-118.291994|36.23998,-116.83171&samples=3&key=AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE
+Key ="AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";
+
+
+
+
+https://maps.googleapis.com/maps/api/staticmap?center=20,92&zoom=6&size=500x500&maptype=roadmap&key=AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE
