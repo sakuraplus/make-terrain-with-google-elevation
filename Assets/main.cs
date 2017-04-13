@@ -71,10 +71,10 @@ public class main : MonoBehaviour {
 			byte[] data = System.Text.Encoding.Default.GetBytes(strlicense);//(byte)strlicense;
 			string base64str = System.Convert.ToBase64String(data); 
 			print ("!!! "+base64str);
-			if (base64str == "YzJGcmRWTmhhM1ZFYjA1dmRFaGhjSEI1") {
+			if (base64str == "c2FrdVNha3VEb05vdEhhcHB5") {
 				print ("license correct!");
 				_havelicense = true;
-				//makeTrr ();
+				makeTrr ();
 
 			} else {
 				print ("license incorrect");
