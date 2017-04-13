@@ -33,8 +33,8 @@ public class main : MonoBehaviour {
 	public Vector2 segment=new Vector2(5,5);//每块地图分段数
 	[SerializeField,HeaderAttribute ("Default material of each block")]
 	public Material matTrr;			//地形预设材质
-	//[SerializeField,HeaderAttribute ("Get a KEY at developers.google.com/maps/documentation/elevation")]
-	string  googleAPIKey="AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";
+	[SerializeField,HeaderAttribute ("Get a KEY at developers.google.com/maps/documentation/elevation")]
+	string  googleAPIKey="";
 
 	public static string APIkey;
 	//https://developers.google.com/maps/documentation/elevation/start?
