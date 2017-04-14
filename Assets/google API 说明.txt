@@ -28,6 +28,13 @@ json格式
 https://maps.googleapis.com/maps/api/staticmap?center=20,92&zoom=6&size=500x500&maptype=roadmap&key=AIzaSyDTM6sg5VMA7jrSvZ3MCyvK16RESl1UwSo
 AIzaSyB-uSY220xhQtkTgc-fEU2y5fd_3zrLoGY
 
+
+
+https://maps.googleapis.com/maps/api/staticmap?center=40,100&zoom=3&size=1100x1100&markers=70,70&markers=50,90&markers=30,110&markers=10,130&markers=71,71&key=AIzaSyB-uSY220xhQtkTgc-fEU2y5fd_3zrLoGY
+
+不同纬度下，同纬度差之间距离不同
+
+
 center：中心点经纬度
 zoom：缩放比例，需要根据地图范围计算
 size：图像大小，图像高/宽=地图范围南北方向/东西方向

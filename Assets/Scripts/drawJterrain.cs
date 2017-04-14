@@ -210,11 +210,10 @@ public class drawJterrain : MonoBehaviour {
 		int nextpoweroftwo =(int)Mathf.ClosestPowerOfTwo(tempsize);
 		int zoommap = (int)Math.Floor (Mathf.Log(nextpoweroftwo ,2));
 		print ("tempsize= "+tempsize+"  lerplat= " + lerplat + "  nextpoweroftwo= " + nextpoweroftwo);
-
-		print("Mathf  8== "+Mathf.ClosestPowerOfTwo(8)+"   7=="+Mathf.ClosestPowerOfTwo(7)+"   11=="+Mathf.ClosestPowerOfTwo(12));
-		print("Mathf  8== "+Mathf.Log(4,2)+"   7=="+Mathf.Log (7,2)+"   16=="+Mathf.Log(16,2));
 		int sizemapx=(int)Math.Abs( lerplat  *256* Math.Pow (2, zoommap)/360);//512;//lat
-		int sizemapy=(int)Math.Abs ( sizemapx*(lerplng/lerplat));
+		int sizemapy=(int)Math.Abs( lerplng  *256* Math.Pow (2, zoommap)/360);//512;//lng
+
+		//int sizemapy=(int)Math.Abs ( sizemapx*(lerplng/lerplat));
 		string strmaptype="roadmap";
 
 		string 	ipaddress = "https://maps.googleapis.com/maps/api/staticmap?center="; //获取
