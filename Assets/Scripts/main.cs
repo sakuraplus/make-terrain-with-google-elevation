@@ -70,7 +70,7 @@ public class main : MonoBehaviour {
 			strlicense = strlicense.Substring (0, 18);
 			byte[] data = System.Text.Encoding.Default.GetBytes(strlicense);//(byte)strlicense;
 			string base64str = System.Convert.ToBase64String(data); 
-			print ("!!! "+base64str);
+			//print ("!!! "+base64str);
 			if (base64str == "c2FrdVNha3VEb05vdEhhcHB5") {
 				print ("license correct!");
 				_havelicense = true;

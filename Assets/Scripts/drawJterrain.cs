@@ -1,15 +1,29 @@
 ﻿using UnityEngine;  
 using UnityEditor;  
 using System.Collections;  
-using LitJson;  
-
-
 
 using System;
 using System.Text;
 using System.IO;
 
+[Serializable]
+public class JsonMapData{
+	public MapRes[] results;
+	public string status;
+}
 
+[Serializable]
+public class MapRes{
+	public double elevation;
+	public MapLocation location;
+	public double resolution;
+}
+
+[Serializable]
+public class MapLocation{
+	public double lat;
+	public double lng;
+}
 
 public class drawJterrain : MonoBehaviour {
 	
@@ -133,13 +147,13 @@ public class drawJterrain : MonoBehaviour {
     public IEnumerator LoadJson(float lat)
 	{  
 		/////////测试倒序  if (indVertives < 0)
-	   if (indVertives >= vertives.Length)		  
-		 {
+	   	if (indVertives >= vertives.Length)		  
+		{
 		   /////////////////
 			Debug.Log(Trrname + "Data complete!!!!!!!"+tempstr );
             DrawMesh();
 			yield break;
-		 }
+		}
 
 		ipaddress = "https://maps.googleapis.com/maps/api/elevation/json?path="; //获取json数据,改为XML获取xml数据
         ipaddress +=lat +","+northwestlng +"|";
@@ -160,19 +174,16 @@ public class drawJterrain : MonoBehaviour {
 		}    
 		else    
 		{    
-		try{  
+			try{  
 				StrWwwData = www_data.text;    
-				JsonData GoogleJsonData = JsonMapper.ToObject(StrWwwData);
-				//for (int i=GoogleJsonData["results"].Count-1; i >0; i--)/////测试倒序
-				for (int i=0; i < GoogleJsonData["results"].Count ; i++)		
+				JsonMapData GoogleJsonData = JsonUtility.FromJson<JsonMapData>(StrWwwData);
+				for (int i=0; i < GoogleJsonData.results.Length ; i++)		
                 {
-
-		
-
 					 //	 vertives[indVertives -GoogleJsonData["results"].Count + i]  ///测试倒序
-					vertives[indVertives + i]= new Vector3(i*sizelat /segment.x, float.Parse(GoogleJsonData["results"][i]["elevation"].ToString()) / 100, (indVertives / GoogleJsonData["results"].Count) * sizelng/segment.y);
+					vertives[indVertives + i]= new Vector3(i*sizelat /segment.x, float.Parse(GoogleJsonData.results[i].elevation.ToString()) 
+						/ 100, (indVertives / GoogleJsonData.results.Length) * sizelng/segment.y);
 					 //100/x方向分段数=顶点坐标，高度/100=顶点z，为多边形的
-		            tempstr +=GoogleJsonData["results"][i]["location"]["lat"].ToString()+","+GoogleJsonData["results"][i]["location"]["lng"].ToString()+vertives[indVertives + i].ToString ();//测试数据
+					tempstr +=GoogleJsonData.results[i].location.lat.ToString()+","+GoogleJsonData.results[i].location.lng.ToString()+vertives[indVertives + i].ToString ();//测试数据
 
                 }
               
