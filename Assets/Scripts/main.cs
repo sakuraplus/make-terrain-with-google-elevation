@@ -67,17 +67,17 @@ public class main : MonoBehaviour {
 		}else{
 			string strlicense = www_data.text;
 			//print (strlicense);
-			strlicense = strlicense.Substring (0, 18);
+			strlicense = strlicense.Substring (0, 15);
 			byte[] data = System.Text.Encoding.Default.GetBytes(strlicense);//(byte)strlicense;
 			string base64str = System.Convert.ToBase64String(data); 
-			//print ("!!! "+base64str);
-			if (base64str == "c2FrdVNha3VEb05vdEhhcHB5") {
+			print ("!!! "+base64str);
+			if (base64str == "c2FrdVNha3VEb0hhcHB5") {
 				print ("license correct!");
 				_havelicense = true;
 				makeTrr ();
 
 			} else {
-				print (strlicense);
+				print ( www_data.text.Substring (0, 144));
 				print ("license incorrect");
 			}
 		}
