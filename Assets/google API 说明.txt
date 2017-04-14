@@ -1,7 +1,7 @@
 
 海拔服务：
 https://maps.googleapis.com/maps/api/elevation/json?path=36.578581,-118.291994|36.23998,-116.83171&samples=3&key=YOUR_API_KEY
-Key ="AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";//"AIzaSyApPJ8CP4JxKWIW2vavwdRl6fnDvdcgCLk";//需要自己注册！！
+Key ="AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";//"AIzaSyCj_Gl6utX5o8U93aLzj1gl9EJwU8pU_4c";//需要自己注册！！
 json格式
 {
    "results" : [
@@ -26,7 +26,7 @@ json格式
 静态地图服务：
 
 https://maps.googleapis.com/maps/api/staticmap?center=20,92&zoom=6&size=500x500&maptype=roadmap&key=AIzaSyDTM6sg5VMA7jrSvZ3MCyvK16RESl1UwSo
-AIzaSyA4BrG5z3_ZwBk8PopGOUMhw62VpU30PFE
+AIzaSyB-uSY220xhQtkTgc-fEU2y5fd_3zrLoGY
 
 center：中心点经纬度
 zoom：缩放比例，需要根据地图范围计算

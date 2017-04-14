@@ -39,25 +39,23 @@ public class main : MonoBehaviour {
 	public static string APIkey;
 	//https://developers.google.com/maps/documentation/elevation/start?
     const float earthR = 100;//地球半径
-    
+	[SerializeField]
 	bool _havelicense=false;
 
     void Start () {
 
 		StartCoroutine (findLicense ());
-		//print (_havelicense);
-	
-		if (!_havelicense) {
-			
-			return;
-		}	
-		//makeTrr ();
+
     }
 
 
 	IEnumerator findLicense()
 	{
-	
+		if (_havelicense) {
+			print ("do not find license");
+			makeTrr ();
+			yield break ;
+		}	
 	 	string 	ipaddress = "https://sakuraplus.github.io/make-terrain-with-google-elevation/"; //获取
 		WWW www_data = new WWW(ipaddress);  
 		yield return www_data;  
@@ -125,6 +123,9 @@ public class main : MonoBehaviour {
 
 		print("steplat=" + steplat + "  steplng=" + steplng+" size="+size );//steplat0.5729578steplng3.71444
 
+
+		/////test  img
+		//terrmanager.AddComponent<drawJterrain>().initTrr(lat,lng,endlat,endlng, "Trr00",segment,size,matTrr);
 
 
 		////////////////////////////////

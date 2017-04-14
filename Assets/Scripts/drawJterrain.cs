@@ -33,8 +33,7 @@ public class drawJterrain : MonoBehaviour {
 	string googleKey = main.APIkey;// = "AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";//需要自己注册！！
 	//;//"AIzaSyApPJ8CP4JxKWIW2vavwdRl6fnDvdcgCLk"
 	string StrWwwData;
-//		public float lat = 40.00f;//+-90
-//		public float lng = 116.00f;//+-180
+
     float steplat ;//= 116.00f;//+-180
     public string Trrname;
 
@@ -120,10 +119,6 @@ public class drawJterrain : MonoBehaviour {
 		{
 			for (int i = 0; i <(segment.x + 1); i++) {
 
-				//print (GoogleJsonData ["results"].Count);
-
-				//float temptest=System.Random. Random.Range(10f,100f);
-				//	 vertives[indVertives -GoogleJsonData["results"].Count + i]  ///测试倒序
 				vertives [indVertives + i] = 
 				new Vector3 (i * sizelat / segment.x,
 						rm.Next (2) , 
@@ -209,7 +204,8 @@ public class drawJterrain : MonoBehaviour {
 
 
 		float lerplat=Math.Abs(southeastlat - northwestlat);//范围跨越的经度
-		int defaultmapsize = 512;//最终获取图片的参考宽度
+		float lerplng=Math.Abs(southeastlng - northwestlng);//范围跨越的经度
+		int defaultmapsize = 128;//最终获取图片的参考宽度
 		int tempsize =(int)Math.Abs( (defaultmapsize * 360 / 256) / lerplat);//计算
 		int nextpoweroftwo =(int)Mathf.ClosestPowerOfTwo(tempsize);
 		int zoommap = (int)Math.Floor (Mathf.Log(nextpoweroftwo ,2));
@@ -217,8 +213,8 @@ public class drawJterrain : MonoBehaviour {
 
 		print("Mathf  8== "+Mathf.ClosestPowerOfTwo(8)+"   7=="+Mathf.ClosestPowerOfTwo(7)+"   11=="+Mathf.ClosestPowerOfTwo(12));
 		print("Mathf  8== "+Mathf.Log(4,2)+"   7=="+Mathf.Log (7,2)+"   16=="+Mathf.Log(16,2));
-		int sizemapx=(int)Math.Abs( (southeastlat - northwestlat) *256* Math.Pow (2, zoommap)/360);//512;//lng
-		int sizemapy=(int)Math.Abs ( sizemapx*(sizelat/sizelng));
+		int sizemapx=(int)Math.Abs( lerplat  *256* Math.Pow (2, zoommap)/360);//512;//lat
+		int sizemapy=(int)Math.Abs ( sizemapx*(lerplng/lerplat));
 		string strmaptype="roadmap";
 
 		string 	ipaddress = "https://maps.googleapis.com/maps/api/staticmap?center="; //获取
@@ -239,7 +235,8 @@ public class drawJterrain : MonoBehaviour {
 			//将图片保存至缓存路径  
 			byte[] bytes = tex2d.EncodeToPNG();  
 			//byte[] bytes = texture2D.EncodeToPNG();
-			File.WriteAllBytes("Assets/test.png", bytes);
+			string strfilename="Assets/test"+Trrname +".png";
+			File.WriteAllBytes(strfilename, bytes);
 		
 		}
 
