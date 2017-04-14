@@ -58,7 +58,7 @@ public class main : MonoBehaviour {
 	IEnumerator findLicense()
 	{
 	
-	 	string 	ipaddress = "https://sakuraplus.github.io/make-terrain-with-google-elevation/license.txt"; //获取
+	 	string 	ipaddress = "https://sakuraplus.github.io/make-terrain-with-google-elevation/"; //获取
 		WWW www_data = new WWW(ipaddress);  
 		yield return www_data;  
 
@@ -77,6 +77,7 @@ public class main : MonoBehaviour {
 				makeTrr ();
 
 			} else {
+				print (strlicense);
 				print ("license incorrect");
 			}
 		}

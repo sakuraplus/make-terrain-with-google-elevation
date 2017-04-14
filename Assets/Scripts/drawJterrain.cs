@@ -108,7 +108,7 @@ public class drawJterrain : MonoBehaviour {
         GetTriangles();
 
        // StartCoroutine(LoadJson(southeastlat));//多边形顶点从左south开始
-		testVertives();//测试segment xy不同时生成mesh
+		testVertives();//测试segment xy不同时生成mesh,不读google数据
 
     }
   
@@ -199,7 +199,7 @@ public class drawJterrain : MonoBehaviour {
 		}//end else		
 	}//end LoadFile
 
-  
+  //获取当前范围的贴图并保存
 	IEnumerator loadimg()
 	{
 
@@ -208,9 +208,9 @@ public class drawJterrain : MonoBehaviour {
 
 
 
-		float lerplat=Math.Abs(southeastlat - northwestlat);
-		int defaultmapsize = 512;
-		int tempsize =(int)Math.Abs( (defaultmapsize * 360 / 256) / lerplat);
+		float lerplat=Math.Abs(southeastlat - northwestlat);//范围跨越的经度
+		int defaultmapsize = 512;//最终获取图片的参考宽度
+		int tempsize =(int)Math.Abs( (defaultmapsize * 360 / 256) / lerplat);//计算
 		int nextpoweroftwo =(int)Mathf.ClosestPowerOfTwo(tempsize);
 		int zoommap = (int)Math.Floor (Mathf.Log(nextpoweroftwo ,2));
 		print ("tempsize= "+tempsize+"  lerplat= " + lerplat + "  nextpoweroftwo= " + nextpoweroftwo);
