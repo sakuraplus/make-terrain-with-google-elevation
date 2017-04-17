@@ -205,23 +205,41 @@ public class drawJterrain : MonoBehaviour {
 
 		float lerplat=Math.Abs(southeastlat - northwestlat);//范围跨越的经度
 		float lerplng=Math.Abs(southeastlng - northwestlng);//范围跨越的经度
-		int defaultmapsize = 128;//最终获取图片的参考宽度
-		int tempsize =(int)Math.Abs( (defaultmapsize * 360 / 256) / lerplat);//计算
-		int nextpoweroftwo =(int)Mathf.ClosestPowerOfTwo(tempsize);
-		int zoommap = (int)Math.Floor (Mathf.Log(nextpoweroftwo ,2));
-		print ("tempsize= "+tempsize+"  lerplat= " + lerplat + "  nextpoweroftwo= " + nextpoweroftwo);
-		int sizemapx=(int)Math.Abs( lerplat  *256* Math.Pow (2, zoommap)/360);//512;//lat
-		int sizemapy=(int)Math.Abs( lerplng  *256* Math.Pow (2, zoommap)/360);//512;//lng
+		int defaultmapsize = 640;//最终获取图片的参考宽度,免费key最大尺寸
 
-		//int sizemapy=(int)Math.Abs ( sizemapx*(lerplng/lerplat));
+		int tempsize =(int)Math.Abs( (defaultmapsize * 360 / 256) / lerplat);//计算保证获取图片最小尺寸在tempsize以上时所需的zoom
+		int nextpoweroftwo =(int)Mathf.ClosestPowerOfTwo(tempsize);//计算保证获取图片最小尺寸在tempsize以上时所需的zoom
+		int zoommap = (int)Math.Floor (Mathf.Log(nextpoweroftwo ,2));//计算保证获取图片最小尺寸在tempsize以上时所需的zoom
+
+		float mapsize = 256 * Mathf.Pow (2, zoommap);//在当前zoom下，完整地图的大小
+
+		print (Trrname+" tempsize= "+tempsize+"  lerplat= " + lerplat + "  nextpoweroftwo= " + nextpoweroftwo);
+
+		int sizemapx=(int)Math.Abs( lerplat  *mapsize/360);//完整地图等分360份为跨经度1的宽度
+		//int sizemapy=(int)Math.Abs( lerplng  *mapsize/360);//512;//lng
+		//print (Trrname+" sizemapx= "+sizemapx+" sizemapy=  "+sizemapy);
+		////////////////
+		// north
+		float sinnorthlat=Mathf.Sin(northwestlat *Mathf.PI /180);
+		sinnorthlat = Mathf.Min (Mathf.Max (sinnorthlat, -0.99f), 0.99f);
+		float poinynorthlat=mapsize *(0.5f - Mathf.Log ((1 + sinnorthlat) / (1 - sinnorthlat)) / (4 * Mathf.PI));
+		/// 
+		// south
+		float sinsouthlat=Mathf.Sin(southeastlat  *Mathf.PI /180);
+		sinsouthlat = Mathf.Min (Mathf.Max (sinsouthlat, -0.99f), 0.99f);
+		float poinysouthlat=mapsize *(0.5f - Mathf.Log ((1 + sinsouthlat) / (1 - sinsouthlat)) / (4 * Mathf.PI));
+
+		print (Trrname+" north lat= " + poinynorthlat + "  south lat= " + poinysouthlat+"  mapsize= "+mapsize); 
+		int sizemapy =(int) Mathf.Abs (poinysouthlat+ - poinynorthlat);
+		/// /////////////////////
 		string strmaptype="roadmap";
 
 		string 	ipaddress = "https://maps.googleapis.com/maps/api/staticmap?center="; //获取
 		ipaddress+=centerlat+","+centerlng+"&zoom="+zoommap;
-		ipaddress += "&size=" + sizemapy + "x" + sizemapx + "&maptype="+strmaptype + "&key=";
+		ipaddress += "&size=" + sizemapx + "x" + sizemapy + "&maptype="+strmaptype + "&key=";
 		ipaddress += "AIzaSyCljEOXoKPrh9x-xAbpVirQN4fKeI1H9mA";
 
-		print ("loadimg  "+ipaddress );
+		print (Trrname+"  loadimg  "+ipaddress );
 		WWW www_data = new WWW(ipaddress);  
 		yield return www_data;  
 
