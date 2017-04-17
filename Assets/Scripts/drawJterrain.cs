@@ -205,7 +205,7 @@ public class drawJterrain : MonoBehaviour {
 
 		float lerplat=Math.Abs(southeastlat - northwestlat);//范围跨越的经度
 		float lerplng=Math.Abs(southeastlng - northwestlng);//范围跨越的经度
-		int defaultmapsize = 640;//最终获取图片的参考宽度,免费key最大尺寸
+		int defaultmapsize = 256;//最终获取图片的参考宽度,免费key最大尺寸
 
 		int tempsize =(int)Math.Abs( (defaultmapsize * 360 / 256) / lerplat);//计算保证获取图片最小尺寸在tempsize以上时所需的zoom
 		int nextpoweroftwo =(int)Mathf.ClosestPowerOfTwo(tempsize);//计算保证获取图片最小尺寸在tempsize以上时所需的zoom
@@ -222,20 +222,29 @@ public class drawJterrain : MonoBehaviour {
 		// north
 		float sinnorthlat=Mathf.Sin(northwestlat *Mathf.PI /180);
 		sinnorthlat = Mathf.Min (Mathf.Max (sinnorthlat, -0.99f), 0.99f);
-		float poinynorthlat=mapsize *(0.5f - Mathf.Log ((1 + sinnorthlat) / (1 - sinnorthlat)) / (4 * Mathf.PI));
+		float pointnorthlat=mapsize *(0.5f - Mathf.Log ((1 + sinnorthlat) / (1 - sinnorthlat)) / (4 * Mathf.PI));
 		/// 
 		// south
 		float sinsouthlat=Mathf.Sin(southeastlat  *Mathf.PI /180);
 		sinsouthlat = Mathf.Min (Mathf.Max (sinsouthlat, -0.99f), 0.99f);
-		float poinysouthlat=mapsize *(0.5f - Mathf.Log ((1 + sinsouthlat) / (1 - sinsouthlat)) / (4 * Mathf.PI));
+		float pointsouthlat=mapsize *(0.5f - Mathf.Log ((1 + sinsouthlat) / (1 - sinsouthlat)) / (4 * Mathf.PI));
 
-		print (Trrname+" north lat= " + poinynorthlat + "  south lat= " + poinysouthlat+"  mapsize= "+mapsize); 
-		int sizemapy =(int) Mathf.Abs (poinysouthlat+ - poinynorthlat);
+		print (Trrname+" north lat= " + pointnorthlat + "  south lat= " + pointsouthlat+"  mapsize= "+mapsize); 
+		int sizemapy =(int) Mathf.Abs (pointsouthlat - pointnorthlat);
 		/// /////////////////////
+		float tempcentery=(pointsouthlat+pointnorthlat )/2;
+		float tempc = 4 * Mathf.PI * (0.5f - (tempcentery / mapsize));
+		float templog = Mathf.Exp (tempc);
+		float sincentery = (templog - 1) / (templog + 1);
+		float newcenterlat =Mathf.Asin(sincentery )*180/Mathf.PI ;
+		print (Trrname+ " new center  "+newcenterlat );
+		/// templog=(1+siny)/(1-siny)
+		/// 
+		/// //////////////////
 		string strmaptype="roadmap";
 
 		string 	ipaddress = "https://maps.googleapis.com/maps/api/staticmap?center="; //获取
-		ipaddress+=centerlat+","+centerlng+"&zoom="+zoommap;
+		ipaddress+=newcenterlat+","+centerlng+"&zoom="+zoommap;
 		ipaddress += "&size=" + sizemapx + "x" + sizemapy + "&maptype="+strmaptype + "&key=";
 		ipaddress += "AIzaSyCljEOXoKPrh9x-xAbpVirQN4fKeI1H9mA";
 
