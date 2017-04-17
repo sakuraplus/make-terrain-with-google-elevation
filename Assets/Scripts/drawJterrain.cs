@@ -64,6 +64,8 @@ public class drawJterrain : MonoBehaviour {
 
 	private GameObject terrain;
 
+	Texture mapTexture;
+
     public string  test()
     {
        return terrain.name;
@@ -106,8 +108,10 @@ public class drawJterrain : MonoBehaviour {
         GetUV();
         GetTriangles();
 
-       // StartCoroutine(LoadJson(southeastlat));//多边形顶点从左south开始
-		testVertives();//测试segment xy不同时生成mesh,不读google数据
+//		testVertives();//测试segment xy不同时生成mesh,不读google数据
+		StartCoroutine(	loadimg ());
+       	//StartCoroutine(LoadJson(southeastlat));//多边形顶点从左south开始
+
 
     }
   
@@ -198,12 +202,12 @@ public class drawJterrain : MonoBehaviour {
 	IEnumerator loadimg()
 	{
 
-		float centerlat = (southeastlat + northwestlat) / 2;
-		float centerlng = (southeastlng + northwestlng) / 2;
+		float centerlat = (southeastlat + northwestlat) / 2;//中心纬度
+		float centerlng = (southeastlng + northwestlng) / 2;//中心经度
 
 
 
-		float lerplat=Math.Abs(southeastlat - northwestlat);//范围跨越的经度
+		float lerplat=Math.Abs(southeastlat - northwestlat);//范围跨越的纬度
 		float lerplng=Math.Abs(southeastlng - northwestlng);//范围跨越的经度
 		int defaultmapsize = 256;//最终获取图片的参考宽度,免费key最大尺寸
 
@@ -241,7 +245,7 @@ public class drawJterrain : MonoBehaviour {
 		/// templog=(1+siny)/(1-siny)
 		/// 
 		/// //////////////////
-		string strmaptype="roadmap";
+		string strmaptype="satellite";
 
 		string 	ipaddress = "https://maps.googleapis.com/maps/api/staticmap?center="; //获取
 		ipaddress+=newcenterlat+","+centerlng+"&zoom="+zoommap;
@@ -263,9 +267,10 @@ public class drawJterrain : MonoBehaviour {
 			//byte[] bytes = texture2D.EncodeToPNG();
 			string strfilename="Assets/test"+Trrname +".png";
 			File.WriteAllBytes(strfilename, bytes);
-		
+			mapTexture = tex2d;
+			StartCoroutine(LoadJson(southeastlat));
 		}
-
+			
 	}
 
 
@@ -285,7 +290,7 @@ public class drawJterrain : MonoBehaviour {
 	}
 
   //
-    private void DrawMesh()
+	private void DrawMesh()
 	{
 		Mesh mesh = terrain.AddComponent<MeshFilter>().mesh;
 		terrain.AddComponent<MeshRenderer>();
@@ -294,6 +299,10 @@ public class drawJterrain : MonoBehaviour {
         if (diffuseMap == null)
         {
 			diffuseMap = new Material(Shader.Find("Standard"));
+			if(mapTexture!=null){
+				diffuseMap.SetTexture ("_MainTex",mapTexture);
+			}
+
         }
         terrain.GetComponent<Renderer>().material = diffuseMap;
 
