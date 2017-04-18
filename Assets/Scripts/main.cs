@@ -33,10 +33,12 @@ public class main : MonoBehaviour {
 	public Vector2 segment=new Vector2(5,5);//每块地图分段数
 	[SerializeField,HeaderAttribute ("Default material of each block")]
 	public Material matTrr;			//地形预设材质
-	[SerializeField,HeaderAttribute ("Get a KEY at developers.google.com/maps/documentation/elevation")]
-	string  googleAPIKey="";
-
-	public static string APIkey;
+	[SerializeField,HeaderAttribute ("Get a ELE KEY at developers.google.com/maps/documentation/elevation")]
+	string  googleELEAPIKey="";
+	[SerializeField,HeaderAttribute ("Get a STM KEY at ")]
+	string  googleSTMAPIKey="";
+	public static string ELEAPIkey;
+	public static string STMAPIkey;
 	//https://developers.google.com/maps/documentation/elevation/start?
     const float earthR = 100;//地球半径
 	[SerializeField]
@@ -47,6 +49,10 @@ public class main : MonoBehaviour {
 		StartCoroutine (findLicense ());
 
     }
+	public void EditorCall()
+	{
+		StartCoroutine (findLicense ());
+	}
 
 
 	IEnumerator findLicense()
@@ -84,7 +90,12 @@ public class main : MonoBehaviour {
 
 	void makeTrr()
 	{
-		APIkey = googleAPIKey;
+		ELEAPIkey = googleELEAPIKey;
+		STMAPIkey = googleSTMAPIKey;
+		if (ELEAPIkey.Length < 1) {
+
+			Debug.LogWarning ("you need ele key");
+		}
 		//	Debug.Log("纬度--");
 		GameObject terrmanager = new GameObject();
 		//	arrObj = new GameObject[9];

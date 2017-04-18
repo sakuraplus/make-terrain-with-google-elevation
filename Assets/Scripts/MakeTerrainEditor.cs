@@ -18,21 +18,9 @@ public class MakeTerrainEditor : Editor { // extend the Editor class
 		if(GUILayout.Button("run"))
 		{
 			// if button pressed, then call function in script
-			_main.EditorCall ();
+			_main.EditorCall ();//editor 不调用协程
 		}
 
-	
-
-
-		// //////////////////////////
-//		if(GUILayout.Button("print"))
-//		{
-//			// if button pressed, then call function in script
-//			Debug.Log ("oooo");
-//			if (EditorUtility.DisplayDialog("????",   "aaaaa?",   "Yes00", "No")) {
-//		
-//			}
-//		}
 
 	}
 }

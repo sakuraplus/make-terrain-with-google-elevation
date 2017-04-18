@@ -30,7 +30,8 @@ public class drawJterrain : MonoBehaviour {
 	GameObject Player ;
 
 	string  ipaddress = "https://maps.googleapis.com/maps/api/elevation/json?locations="; 
-	string googleKey = main.APIkey;// = "AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";//需要自己注册！！
+	string ELEKey = main.ELEAPIkey;// = "AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";//需要自己注册！！
+	string STMKey = main.STMAPIkey ;// = "//需要自己注册！！
 	//;//"AIzaSyApPJ8CP4JxKWIW2vavwdRl6fnDvdcgCLk"
 	string StrWwwData;
 
@@ -66,10 +67,10 @@ public class drawJterrain : MonoBehaviour {
 
 	Texture mapTexture;
 
-    public string  test()
-    {
-       return terrain.name;
-    }
+//    public string  test()
+//    {
+//       return terrain.name;
+//    }
 
 	public void initTrr(float _northwestlat,float _northwestlng, float _southeastlat, float _southeastlng, string _Trrname,Vector2 _segment,Vector2 _size, Material _matTrr = null)
     {
@@ -109,9 +110,15 @@ public class drawJterrain : MonoBehaviour {
         GetTriangles();
 
 //		testVertives();//测试segment xy不同时生成mesh,不读google数据
-		StartCoroutine(	loadimg ());
-       	//StartCoroutine(LoadJson(southeastlat));//多边形顶点从左south开始
-
+		//StartCoroutine(	loadimg ());
+//       StartCoroutine(LoadJson(southeastlat));//多边形顶点从左south开始
+		print("stmkey= "+STMKey.Length  );
+		if (STMKey.Length >1) {
+			StartCoroutine (loadimg ());
+		} else {
+			DrawTexture ();
+			StartCoroutine(LoadJson(southeastlat));
+		}
 
     }
   
@@ -135,7 +142,9 @@ public class drawJterrain : MonoBehaviour {
 		}
 		print(tempstr);
 		DrawMesh();
-		StartCoroutine(	loadimg ());
+
+		StartCoroutine (loadimg ());
+		
 	}
 
 
@@ -154,7 +163,7 @@ public class drawJterrain : MonoBehaviour {
         ipaddress +=lat +","+northwestlng +"|";
         ipaddress += lat  +","+southeastlng ;//获取同一纬度下，东西经度之间的数据
         ipaddress += "&samples=" + (segment.x+1)+"&key=";
-        ipaddress +=googleKey;//需要自己注册！！
+        ipaddress +=ELEKey;//需要自己注册！！
 		print(Trrname+"--"+ipaddress);
 		WWW www_data = new WWW(ipaddress);  
 		yield return www_data;  
@@ -201,48 +210,79 @@ public class drawJterrain : MonoBehaviour {
   //获取当前范围的贴图并保存
 	IEnumerator loadimg()
 	{
+		
+		//print ("350= " + 350 % 360+" -10= "+(-10)%360+" -340="+(-340)%360);
+		
+		//float centerlat = (southeastlat + northwestlat) / 2;//中心纬度
+	
+		float centerlng;// = (southeastlng + northwestlng) / 2;//中心经度
+		float lerplng;//=Math.Abs(southeastlng - northwestlng);//范围跨越的经度
+		if (southeastlng < 0 && northwestlng > 0) {
+			centerlng = (360+southeastlng + northwestlng) / 2;//中心经度
+			lerplng=Math.Abs(360+southeastlng - northwestlng);//范围跨越的经度
+		}else{
+			centerlng= (southeastlng + northwestlng) / 2;//中心经度
+			lerplng=Math.Abs(southeastlng - northwestlng);//范围跨越的经度
+		}
+		if (centerlng > 180) {
+			centerlng = centerlng - 360;
+		}
 
-		float centerlat = (southeastlat + northwestlat) / 2;//中心纬度
-		float centerlng = (southeastlng + northwestlng) / 2;//中心经度
 
+		//float lerplat=Math.Abs(southeastlat - northwestlat);//范围跨越的纬度
+	
+	
 
+		float sizemapx=Mathf.Abs( lerplng  /360);//完整地图等分360份为跨经度1的宽度，在完整地图中所占的比例
 
-		float lerplat=Math.Abs(southeastlat - northwestlat);//范围跨越的纬度
-		float lerplng=Math.Abs(southeastlng - northwestlng);//范围跨越的经度
-		int defaultmapsize = 256;//最终获取图片的参考宽度,免费key最大尺寸
-
-		int tempsize =(int)Math.Abs( (defaultmapsize * 360 / 256) / lerplat);//计算保证获取图片最小尺寸在tempsize以上时所需的zoom
-		int nextpoweroftwo =(int)Mathf.ClosestPowerOfTwo(tempsize);//计算保证获取图片最小尺寸在tempsize以上时所需的zoom
-		int zoommap = (int)Math.Floor (Mathf.Log(nextpoweroftwo ,2));//计算保证获取图片最小尺寸在tempsize以上时所需的zoom
-
-		float mapsize = 256 * Mathf.Pow (2, zoommap);//在当前zoom下，完整地图的大小
-
-		print (Trrname+" tempsize= "+tempsize+"  lerplat= " + lerplat + "  nextpoweroftwo= " + nextpoweroftwo);
-
-		int sizemapx=(int)Math.Abs( lerplat  *mapsize/360);//完整地图等分360份为跨经度1的宽度
-		//int sizemapy=(int)Math.Abs( lerplng  *mapsize/360);//512;//lng
-		//print (Trrname+" sizemapx= "+sizemapx+" sizemapy=  "+sizemapy);
 		////////////////
-		// north
+		// north，北端纬度所在完整地图上的位置（比例）
 		float sinnorthlat=Mathf.Sin(northwestlat *Mathf.PI /180);
 		sinnorthlat = Mathf.Min (Mathf.Max (sinnorthlat, -0.99f), 0.99f);
-		float pointnorthlat=mapsize *(0.5f - Mathf.Log ((1 + sinnorthlat) / (1 - sinnorthlat)) / (4 * Mathf.PI));
+		float pointnorthlat=(0.5f - Mathf.Log ((1 + sinnorthlat) / (1 - sinnorthlat)) / (4 * Mathf.PI));
 		/// 
-		// south
+		// south，南端纬度所在完整地图上的位置（比例）
 		float sinsouthlat=Mathf.Sin(southeastlat  *Mathf.PI /180);
 		sinsouthlat = Mathf.Min (Mathf.Max (sinsouthlat, -0.99f), 0.99f);
-		float pointsouthlat=mapsize *(0.5f - Mathf.Log ((1 + sinsouthlat) / (1 - sinsouthlat)) / (4 * Mathf.PI));
+		float pointsouthlat=(0.5f - Mathf.Log ((1 + sinsouthlat) / (1 - sinsouthlat)) / (4 * Mathf.PI));
 
-		print (Trrname+" north lat= " + pointnorthlat + "  south lat= " + pointsouthlat+"  mapsize= "+mapsize); 
-		int sizemapy =(int) Mathf.Abs (pointsouthlat - pointnorthlat);
-		/// /////////////////////
+		print (Trrname+" "+southeastlat +","+ northwestlat+"/"+southeastlng +","+ northwestlng+" north lat= " + pointnorthlat + "  south lat= " + pointsouthlat); 
+		float sizemapy = Mathf.Abs (pointsouthlat - pointnorthlat);//在完整地图中所占的比例
+
+		/// /////////////////////计算zoom
+		int defaultmapsize = 640;//最终获取图片的参考宽度,免费key最大尺寸为640
+		int maxmapx;
+		if (sizemapx >= sizemapy) {
+			maxmapx = defaultmapsize;
+		} else {
+			//当lat方向较大时，取lat方向=640时，计算lng方向的值
+			maxmapx =(int)Mathf.Floor( sizemapx * defaultmapsize / sizemapy);		
+		}
+		int tempsize =(int)Math.Abs( (maxmapx * 360 ) / lerplng);//计算保证获取图片尺寸不超过640时，所需的完整地图尺寸
+		int nextpoweroftwo =(int)Mathf.NextPowerOfTwo (tempsize);//计算保证获取图片不超过640时，所需的可用的完整地图尺寸，为2的幂
+		if(nextpoweroftwo>tempsize){
+			nextpoweroftwo = nextpoweroftwo / 2;
+			//如果tempsize即2的倍数则不需要取小于nextpoweroftwo的值
+			//否则取完整地图尺寸为小于tempsize的，最大的2的幂数
+		}
+		int zoommap = (int)Math.Floor (Mathf.Log(nextpoweroftwo/256 ,2));//根据 完整地图尺寸=256*2的zoom次方，计算zoom的值
+		//zoommap =4;
+		//////////////////////////计算当前zoom下取图片的尺寸
+		float mapsize = 256 * Mathf.Pow (2, zoommap);//在当前zoom下，完整地图的大小
+		sizemapx=Mathf.Floor ( sizemapx*mapsize);
+		sizemapy=Mathf.Floor ( sizemapy*mapsize);//在当前完整地图大小下，xy方向的尺寸,取整数
+
+		print (Trrname+" tempsize= "+tempsize+"  maxmapx= " + maxmapx + "  nextpoweroftwo= " + nextpoweroftwo);
+		/// 
+		/// ///////////计算获取所需区域时，需要的center纬度
+		///（0.5-新center纬度）*4PI=log（（1+siny）/（1-siny））
 		float tempcentery=(pointsouthlat+pointnorthlat )/2;
-		float tempc = 4 * Mathf.PI * (0.5f - (tempcentery / mapsize));
+		float tempc = 4 * Mathf.PI * (0.5f - (tempcentery ));
 		float templog = Mathf.Exp (tempc);
 		float sincentery = (templog - 1) / (templog + 1);
 		float newcenterlat =Mathf.Asin(sincentery )*180/Mathf.PI ;
 		print (Trrname+ " new center  "+newcenterlat );
-		/// templog=(1+siny)/(1-siny)
+		/// 
 		/// 
 		/// //////////////////
 		string strmaptype="satellite";
@@ -250,7 +290,7 @@ public class drawJterrain : MonoBehaviour {
 		string 	ipaddress = "https://maps.googleapis.com/maps/api/staticmap?center="; //获取
 		ipaddress+=newcenterlat+","+centerlng+"&zoom="+zoommap;
 		ipaddress += "&size=" + sizemapx + "x" + sizemapy + "&maptype="+strmaptype + "&key=";
-		ipaddress += "AIzaSyCljEOXoKPrh9x-xAbpVirQN4fKeI1H9mA";
+		ipaddress += STMKey;//"AIzaSyCljEOXoKPrh9x-xAbpVirQN4fKeI1H9mA";
 
 		print (Trrname+"  loadimg  "+ipaddress );
 		WWW www_data = new WWW(ipaddress);  
@@ -268,9 +308,9 @@ public class drawJterrain : MonoBehaviour {
 			string strfilename="Assets/test"+Trrname +".png";
 			File.WriteAllBytes(strfilename, bytes);
 			mapTexture = tex2d;
+			DrawTexture ();
 			StartCoroutine(LoadJson(southeastlat));
 		}
-			
 	}
 
 
@@ -290,21 +330,10 @@ public class drawJterrain : MonoBehaviour {
 	}
 
   //
-	private void DrawMesh()
+		private void DrawMesh()
 	{
 		Mesh mesh = terrain.AddComponent<MeshFilter>().mesh;
-		terrain.AddComponent<MeshRenderer>();
 
-
-        if (diffuseMap == null)
-        {
-			diffuseMap = new Material(Shader.Find("Standard"));
-			if(mapTexture!=null){
-				diffuseMap.SetTexture ("_MainTex",mapTexture);
-			}
-
-        }
-        terrain.GetComponent<Renderer>().material = diffuseMap;
 
         //给mesh 赋值
         mesh.Clear();
@@ -315,12 +344,27 @@ public class drawJterrain : MonoBehaviour {
 		mesh.RecalculateNormals();
 		//重置范围
 		mesh.RecalculateBounds();
-
+//		DrawTexture ();
         ////////////////////////
 //        terrain.AddComponent<MeshCollider>();
 //        terrain.GetComponent<MeshCollider>().sharedMesh = mesh ;
 //        terrain.GetComponent<MeshCollider>().convex = true;
     }
+	private void DrawTexture(){
+	
+		terrain.AddComponent<MeshRenderer>();
+
+
+		if (diffuseMap == null)
+		{
+			diffuseMap = new Material(Shader.Find("Standard"));
+			if(mapTexture!=null){
+				diffuseMap.SetTexture ("_MainTex",mapTexture);
+			}
+
+		}
+		terrain.GetComponent<Renderer>().material = diffuseMap;
+	}
 
 
 	//设定每个顶点的uv
