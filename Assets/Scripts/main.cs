@@ -45,7 +45,7 @@ public class main : MonoBehaviour {
 	bool _havelicense=false;
 
     void Start () {
-
+		print (DateTime.Today + "/ssss//" + DateTime.Today.TimeOfDay);
 		StartCoroutine (findLicense ());
 
     }

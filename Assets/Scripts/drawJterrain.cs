@@ -30,18 +30,18 @@ public class drawJterrain : MonoBehaviour {
 	GameObject Player ;
 
 	string  ipaddress = "https://maps.googleapis.com/maps/api/elevation/json?locations="; 
-	string ELEKey = main.ELEAPIkey;// = "AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";//需要自己注册！！
-	string STMKey = main.STMAPIkey ;// = "//需要自己注册！！
+	string ELEKey = main.ELEAPIkey;//google高度api key = "AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";//需要自己注册！！
+	string STMKey = main.STMAPIkey ;// google static map api key= "//需要自己注册！！
 	//;//"AIzaSyApPJ8CP4JxKWIW2vavwdRl6fnDvdcgCLk"
 	string StrWwwData;
 
-    float steplat ;//= 116.00f;//+-180
+    float steplat ;//每次获取高度数据的间隔
     public string Trrname;
 
-    public  float northwestlat;// = -90;//+-90
-    public  float northwestlng;// = -180;//+-180
-    public  float southeastlat;// = -90;//+-90
-    public  float southeastlng;//= -180;//+-180
+    public  float northwestlat;// +-90西北
+    public  float northwestlng;//+-180西北
+    public  float southeastlat;// +-90东南
+    public  float southeastlng;//+-180东南
 
 	Vector2 segment=new Vector2(3,3);//每块分段数量
 	
@@ -50,7 +50,7 @@ public class drawJterrain : MonoBehaviour {
     public Material diffuseMap;
 
     private Vector3[] vertives;
-    private Vector3[] vtest;///////////////////////////
+   // private Vector3[] vtest;///////////////////////////
 
 
 	float sizelat=100;
@@ -84,36 +84,31 @@ public class drawJterrain : MonoBehaviour {
 		segment=_segment;
         int leng = ((int)segment.x + 1) * ((int)segment.y + 1);
 
-		//////////////测试倒序
-		//indVertives=leng-1;
-		/////////////////////////测试倒序
-
         vertives = new Vector3[leng];//用于存每个点的坐标
 
 
 		if (_northwestlng > 180) {
-			_northwestlng -=360 ;
+			_northwestlng -=360 ;//将超过180度的经度转换为正常值
 		}
 		if (_southeastlng > 180) {
-			_southeastlng -=360;
+			_southeastlng -=360;//将超过180度的经度转换为正常值
 		}
-        northwestlat = _northwestlat;// = -90;//+-90 西北角纬度
-        northwestlng = _northwestlng;// = -180;//+-180西北角经度
-        southeastlat = _southeastlat;// = -90;//+-90 东南角纬度
-        southeastlng = _southeastlng;//= -180;//+-180 东南角经度
+        northwestlat = _northwestlat;// +-90 西北角纬度
+        northwestlng = _northwestlng;//+-180西北角经度
+        southeastlat = _southeastlat;// +-90 东南角纬度
+        southeastlng = _southeastlng;//+-180 东南角经度
         steplat = ( northwestlat-southeastlat ) / segment.y;//每段跨越的纬度
 		//z正方向为北
-		print (Trrname+"-init-"+northwestlat+","+_northwestlng+"//"+_southeastlat+","+_southeastlng+" step="+steplat);
+		//print (Trrname+"-init-"+northwestlat+","+_northwestlng+"//"+_southeastlat+","+_southeastlng+" step="+steplat);
 
         Init(100, 100, (uint)segment.x, (uint)segment.y, -10, 10);//mesh宽度
         GetUV();
         GetTriangles();
 
 //		testVertives();//测试segment xy不同时生成mesh,不读google数据
-		//StartCoroutine(	loadimg ());
-//       StartCoroutine(LoadJson(southeastlat));//多边形顶点从左south开始
-		print("stmkey= "+STMKey.Length  );
-		if (STMKey.Length >1) {
+
+		//没输入staticmap的key则不加载贴图
+		if (STMKey.Length >1 || diffuseMap !=null ) {
 			StartCoroutine (loadimg ());
 		} else {
 			DrawTexture ();
@@ -121,8 +116,20 @@ public class drawJterrain : MonoBehaviour {
 		}
 
     }
+	//
+	private void Init(float width, float height, uint segmentX, uint segmentY, int min, int max)
+	{
+ 
+		segment = new Vector2(segmentX, segmentY);
+		if (terrain != null)
+		{
+			Destroy(terrain);
+		}
+		terrain = new GameObject();
+		terrain.name = Trrname;// 
+	}
   
-
+	//不加载高度数据，测试用
   	void testVertives()
 	{
 		System.Random rm=new System.Random();
@@ -136,21 +143,17 @@ public class drawJterrain : MonoBehaviour {
 						(indVertives / (segment.x + 1)) * sizelng / segment.y);
 				//100/x方向分段数=顶点坐标，高度/100=顶点z，为多边形的
 				tempstr += vertives [indVertives + i].ToString ();
-
-
 			}
 		}
 		print(tempstr);
 		DrawMesh();
-
 		StartCoroutine (loadimg ());
 		
 	}
 
-
+	//加载高度数据，按照纬度方向分段多次加载
     public IEnumerator LoadJson(float lat)
 	{  
-		/////////测试倒序  if (indVertives < 0)
 	   	if (indVertives >= vertives.Length)		  
 		{
 		   /////////////////
@@ -166,7 +169,7 @@ public class drawJterrain : MonoBehaviour {
         ipaddress +=ELEKey;//需要自己注册！！
 		print(Trrname+"--"+ipaddress);
 		WWW www_data = new WWW(ipaddress);  
-		yield return www_data;  
+		yield return www_data;  //获得数据后继续
 
 		StrWwwData = www_data.text;   
 		////////////////////////////
@@ -183,7 +186,6 @@ public class drawJterrain : MonoBehaviour {
 				JsonMapData GoogleJsonData = JsonUtility.FromJson<JsonMapData>(StrWwwData);
 				for (int i=0; i < GoogleJsonData.results.Length ; i++)		
                 {
-					 //	 vertives[indVertives -GoogleJsonData["results"].Count + i]  ///测试倒序
 					vertives[indVertives + i]= new Vector3(i*sizelat /segment.x, float.Parse(GoogleJsonData.results[i].elevation.ToString()) 
 						/ 100, (indVertives / GoogleJsonData.results.Length) * sizelng/segment.y);
 					 //100/x方向分段数=顶点坐标，高度/100=顶点z，为多边形的
@@ -192,8 +194,7 @@ public class drawJterrain : MonoBehaviour {
                 }
               
 				indVertives =indVertives+(int)segment.x+1;//+= GoogleJsonData["results"].Count;/////////
-                lat += steplat;
-           
+                lat += steplat;           
                 StartCoroutine(LoadJson(lat));  //获取下一纬度，东西经度之间的数据
 				StrWwwData = "";  				
 			}  
@@ -210,28 +211,21 @@ public class drawJterrain : MonoBehaviour {
   //获取当前范围的贴图并保存
 	IEnumerator loadimg()
 	{
-		
-		//print ("350= " + 350 % 360+" -10= "+(-10)%360+" -340="+(-340)%360);
-		
-		//float centerlat = (southeastlat + northwestlat) / 2;//中心纬度
-	
-		float centerlng;// = (southeastlng + northwestlng) / 2;//中心经度
-		float lerplng;//=Math.Abs(southeastlng - northwestlng);//范围跨越的经度
+			
+		float centerlng;//中心经度
+		float lerplng;//范围跨越的经度
 		if (southeastlng < 0 && northwestlng > 0) {
-			centerlng = (360+southeastlng + northwestlng) / 2;//中心经度
-			lerplng=Math.Abs(360+southeastlng - northwestlng);//范围跨越的经度
+			//两点精度跨越+-180度线时
+			centerlng = (360+southeastlng + northwestlng) / 2;
+			lerplng=Math.Abs(360+southeastlng - northwestlng);
 		}else{
-			centerlng= (southeastlng + northwestlng) / 2;//中心经度
-			lerplng=Math.Abs(southeastlng - northwestlng);//范围跨越的经度
+			centerlng= (southeastlng + northwestlng) / 2;
+			lerplng=Math.Abs(southeastlng - northwestlng);
 		}
 		if (centerlng > 180) {
+			//计算的中心点超过180度时，转换为正常值
 			centerlng = centerlng - 360;
 		}
-
-
-		//float lerplat=Math.Abs(southeastlat - northwestlat);//范围跨越的纬度
-	
-	
 
 		float sizemapx=Mathf.Abs( lerplng  /360);//完整地图等分360份为跨经度1的宽度，在完整地图中所占的比例
 
@@ -246,7 +240,7 @@ public class drawJterrain : MonoBehaviour {
 		sinsouthlat = Mathf.Min (Mathf.Max (sinsouthlat, -0.99f), 0.99f);
 		float pointsouthlat=(0.5f - Mathf.Log ((1 + sinsouthlat) / (1 - sinsouthlat)) / (4 * Mathf.PI));
 
-		print (Trrname+" "+southeastlat +","+ northwestlat+"/"+southeastlng +","+ northwestlng+" north lat= " + pointnorthlat + "  south lat= " + pointsouthlat); 
+		//print (Trrname+" "+southeastlat +","+ northwestlat+"/"+southeastlng +","+ northwestlng+" north lat= " + pointnorthlat + "  south lat= " + pointsouthlat); 
 		float sizemapy = Mathf.Abs (pointsouthlat - pointnorthlat);//在完整地图中所占的比例
 
 		/// /////////////////////计算zoom
@@ -281,53 +275,53 @@ public class drawJterrain : MonoBehaviour {
 		float templog = Mathf.Exp (tempc);
 		float sincentery = (templog - 1) / (templog + 1);
 		float newcenterlat =Mathf.Asin(sincentery )*180/Mathf.PI ;
-		print (Trrname+ " new center  "+newcenterlat );
-		/// 
-		/// 
+		//print (Trrname+ " new center  "+newcenterlat ); 
 		/// //////////////////
 		string strmaptype="satellite";
 
 		string 	ipaddress = "https://maps.googleapis.com/maps/api/staticmap?center="; //获取
 		ipaddress+=newcenterlat+","+centerlng+"&zoom="+zoommap;
 		ipaddress += "&size=" + sizemapx + "x" + sizemapy + "&maptype="+strmaptype + "&key=";
-		ipaddress += STMKey;//"AIzaSyCljEOXoKPrh9x-xAbpVirQN4fKeI1H9mA";
+		ipaddress += STMKey;
 
 		print (Trrname+"  loadimg  "+ipaddress );
 		WWW www_data = new WWW(ipaddress);  
 		yield return www_data;  
 
 		if (www_data.error != null) {
-			print ("Load img error" + www_data.error);
+			print (Trrname +"Load img error" + www_data.error);
 		}else{
-			print ("load "+www_data );
+			print (Trrname + "loaded img" );
 			//text
 			Texture2D tex2d = www_data.texture;  
 			//将图片保存至缓存路径  
 			byte[] bytes = tex2d.EncodeToPNG();  
-			//byte[] bytes = texture2D.EncodeToPNG();
-			string strfilename="Assets/test"+Trrname +".png";
+			/////////////
+
+		 	string baseResultFolder = "Assets/downloadImg/";
+			string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+			baseResultFolder += dateStr;
+        //string baseResultFullPath = Path.Combine(Application.dataPath, "MTT_Results");
+			if (!Directory.Exists(baseResultFolder)) 
+			{
+				Directory.CreateDirectory(baseResultFolder);
+			}
+	      
+
+			///////////////
+			string strfilename=baseResultFolder+"/"+Trrname +".png";
 			File.WriteAllBytes(strfilename, bytes);
 			mapTexture = tex2d;
+		}
 			DrawTexture ();
 			StartCoroutine(LoadJson(southeastlat));
-		}
 	}
 
 
 
 	///////////////////////////
 	/// 
-	private void Init(float width, float height, uint segmentX, uint segmentY, int min, int max)
-	{
- 
-		segment = new Vector2(segmentX, segmentY);
-		if (terrain != null)
-		{
-			Destroy(terrain);
-		}
-		terrain = new GameObject();
-        terrain.name = Trrname;// "cubeTTT";
-	}
+
 
   //
 		private void DrawMesh()
@@ -349,19 +343,18 @@ public class drawJterrain : MonoBehaviour {
 //        terrain.AddComponent<MeshCollider>();
 //        terrain.GetComponent<MeshCollider>().sharedMesh = mesh ;
 //        terrain.GetComponent<MeshCollider>().convex = true;
+		SaveAsset();
     }
 	private void DrawTexture(){
 	
 		terrain.AddComponent<MeshRenderer>();
-
-
 		if (diffuseMap == null)
 		{
+			//没设定diffuseMap则使用加载的贴图，如果没有加载则使用默认材质
 			diffuseMap = new Material(Shader.Find("Standard"));
 			if(mapTexture!=null){
 				diffuseMap.SetTexture ("_MainTex",mapTexture);
 			}
-
 		}
 		terrain.GetComponent<Renderer>().material = diffuseMap;
 	}
@@ -413,6 +406,24 @@ public class drawJterrain : MonoBehaviour {
 		return triangles;
 	}
 	/// 
+	/// 
+	/// 
+    void SaveAsset()  
+    {  
+		string baseResultFolder="Assets/ResultMesh/";
+		string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+		baseResultFolder += dateStr;
+		//string baseResultFullPath = Path.Combine(Application.dataPath, "MTT_Results");
+		if (!Directory.Exists(baseResultFolder)) 
+		{
+			Directory.CreateDirectory(baseResultFolder);
+		}
 
+
+		///////////////
+		string strfilename=baseResultFolder+"/"+Trrname +".asset";
+        Mesh m1 = terrain . GetComponent<MeshFilter>().mesh;  
+		AssetDatabase.CreateAsset(m1, strfilename);  
+    }  
 	
 }

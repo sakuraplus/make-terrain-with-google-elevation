@@ -29,6 +29,8 @@ sysinfo.txt
 *.apk
 *.unitypackage
 /Assets/MTT_Results
+/Assets/downloadImg
+/Assets/ResultMesh
 /Assets/testTrr12.png.meta
 /Assets/testTrr20.png.meta
 /Assets/testTrr21.png.meta
@@ -50,3 +52,6 @@ sysinfo.txt
 /Assets/Thumbs.db.meta
 /Assets/*.db
 /ProjectSettings/ProjectVersion.txt
+Assets/downloadImg.meta
+Assets/ResultMesh.meta
+ProjectSettings/ProjectVersion.txt
