@@ -65,7 +65,7 @@ public class drawJterrain : MonoBehaviour {
 
 	private GameObject terrain;
 
-	Texture mapTexture;
+	Texture2D mapTexture;
 
 //    public string  test()
 //    {
@@ -298,8 +298,8 @@ public class drawJterrain : MonoBehaviour {
 			byte[] bytes = tex2d.EncodeToPNG();  
 			/////////////
 
-		 	string baseResultFolder = "Assets/downloadImg/";
-			string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+			string baseResultFolder = "Assets/Resources/";
+			string  dateStr = DateTime.Now.ToString("yyyy-MM-dd");
 			baseResultFolder += dateStr;
         //string baseResultFullPath = Path.Combine(Application.dataPath, "MTT_Results");
 			if (!Directory.Exists(baseResultFolder)) 
@@ -310,8 +310,12 @@ public class drawJterrain : MonoBehaviour {
 
 			///////////////
 			string strfilename=baseResultFolder+"/"+Trrname +".png";
+
 			File.WriteAllBytes(strfilename, bytes);
-			mapTexture = tex2d;
+			AssetDatabase.Refresh ();
+			mapTexture = Resources.Load (dateStr+"/"+Trrname) as Texture2D;
+
+			//mapTexture = tex2d;
 		}
 			DrawTexture ();
 			StartCoroutine(LoadJson(southeastlat));
@@ -324,7 +328,7 @@ public class drawJterrain : MonoBehaviour {
 
 
   //
-		private void DrawMesh()
+	private void DrawMesh()
 	{
 		Mesh mesh = terrain.AddComponent<MeshFilter>().mesh;
 
@@ -352,6 +356,21 @@ public class drawJterrain : MonoBehaviour {
 		{
 			//没设定diffuseMap则使用加载的贴图，如果没有加载则使用默认材质
 			diffuseMap = new Material(Shader.Find("Standard"));
+
+			string baseResultFolder="Assets/ResultMesh/";
+			string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+			baseResultFolder += dateStr;
+			//string baseResultFullPath = Path.Combine(Application.dataPath, "MTT_Results");
+			if (!Directory.Exists(baseResultFolder)) 
+			{
+				Directory.CreateDirectory(baseResultFolder);
+			}
+
+
+			///////////////
+			string strfilename=baseResultFolder+"/"+Trrname +".mat";
+			AssetDatabase.CreateAsset(diffuseMap, strfilename);  
+
 			if(mapTexture!=null){
 				diffuseMap.SetTexture ("_MainTex",mapTexture);
 			}

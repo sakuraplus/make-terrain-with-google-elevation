@@ -29,6 +29,7 @@ public class main : MonoBehaviour {
 	[SerializeField,HeaderAttribute ("segment one mesh block in  lng,lat")]
 	public Vector2 segment=new Vector2(5,5);//每块地图分段数
 	[SerializeField,HeaderAttribute ("Default material of each block")]
+	[HideInInspector]
 	public Material matTrr;			//地形预设材质
 	[SerializeField,HeaderAttribute ("Get a ELE KEY at developers.google.com/maps/documentation/elevation")]
 	string  googleELEAPIKey="";
