@@ -1,18 +1,15 @@
-using UnityEngine;
-using System.Collections;
-using System .Xml ;
-
+using UnityEngine;  
+using UnityEditor;  
+using System.Collections;  
 
 using System;
 using System.Text;
 using System.IO;
 
 
-
 public class main : MonoBehaviour {
 
     GameObject terrmanager;//= new GameObject();
-   // GameObject[] arrObj;// = new GameObject[9];
     GameObject[] arrTrr;//= new GameObject[9];
 	[SerializeField,HeaderAttribute ("latitude and longitude of the northwest")]
 	[Range (-90,90)]
@@ -45,7 +42,7 @@ public class main : MonoBehaviour {
 	bool _havelicense=false;
 
     void Start () {
-		print (DateTime.Today + "/ssss//" + DateTime.Today.TimeOfDay);
+	//	print (DateTime.Today + "/ssss//" + DateTime.Today.TimeOfDay);
 		StartCoroutine (findLicense ());
 
     }
@@ -95,10 +92,10 @@ public class main : MonoBehaviour {
 		if (ELEAPIkey.Length < 1) {
 
 			Debug.LogWarning ("you need ele key");
+			return;
 		}
 		//	Debug.Log("纬度--");
-		GameObject terrmanager = new GameObject();
-		//	arrObj = new GameObject[9];
+		terrmanager = new GameObject();
 		arrTrr = new GameObject[9];
 
 
@@ -106,9 +103,6 @@ public class main : MonoBehaviour {
 		terrmanager.name = "TRRMAG";
 
 
-
-		//  float steplat = (float)Math.Abs(distancelat * 360 / (2 * Math.PI *Math.Cos(lat) * earthR));
-		//   float steplng = (float)Math.Abs(distancelng * 360 / (2 * Math.PI *  earthR));
 		//每个分块纬度差
 		float	steplat=(endlat-lat)/3; //(float)Math.Floor(steplat*10)/10;
 		//每个分块经度差
@@ -181,6 +175,71 @@ public class main : MonoBehaviour {
 
 
 
+	}
+	GameObject _newmeshobj;
+	public void meshcombine()
+	{
+		print (terrmanager);
+		print (GameObject.Find ("TRRMAG"));
+		if (GameObject.Find ("TRRMAG")) {
+			print ("exist");
+			//MeshRenderer[] _meshrenders=new MeshRenderer[arrTrr.Length ] ;
+			Material[] _materials = new Material[arrTrr.Length ];
+			for (int i = 0; i < arrTrr.Length; i++) {
+				_materials [i] = arrTrr [i].GetComponent<MeshRenderer > ().material;			
+			}
+			print ("mat="+_materials [0]);
+
+			//---------------- 合并 Mesh -------------------------  
+			//MeshFilter[] meshFilters = new MeshFilter[arrTrr.Length ] ;//
+			CombineInstance[] combine = new CombineInstance[arrTrr .Length];     
+			for (int i = 0; i < arrTrr.Length; i++) {
+				combine[i].mesh = arrTrr [i].GetComponent<MeshFilter >().mesh ;
+				combine[i].transform = arrTrr[i].transform.localToWorldMatrix;  
+				arrTrr[i].gameObject.SetActive(false);  
+			}
+			print ("combine--"+combine[0]);
+			//获取arrtrr中所有MeshFilter组件  
+
+			//新建一个gameobj  
+			_newmeshobj=new GameObject();
+			_newmeshobj.name = "CombindeMesh";
+			_newmeshobj.AddComponent<MeshRenderer > ();
+			_newmeshobj.AddComponent<MeshFilter> ();
+
+			_newmeshobj.GetComponent<MeshFilter>().mesh = new Mesh();   
+			//合并Mesh. 第二个false参数, 表示并不合并为一个网格, 而是一个子网格列表  
+			_newmeshobj.GetComponent<MeshFilter>().mesh.CombineMeshes(combine, false);  
+			_newmeshobj.gameObject.SetActive(true);  
+
+			//为合并后的新Mesh指定材质 ------------------------------  
+			_newmeshobj.GetComponent<MeshRenderer>().sharedMaterials = _materials;   
+
+			//////////////////////////////保存一个mesh
+			string baseResultFolder="Assets/";
+			string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+			baseResultFolder += dateStr;
+			if (!Directory.Exists(baseResultFolder)) 
+			{
+				Directory.CreateDirectory(baseResultFolder);
+			}
+			string strfilename=baseResultFolder+"/aaa" +".asset";
+			Mesh m1 = _newmeshobj . GetComponent<MeshFilter>().mesh;  
+			AssetDatabase.CreateAsset(m1, strfilename);  
+			//////////////////////////////////end 保存一个mesh
+
+		} else {
+			Debug.LogWarning ("run first！");
+		}
+	}
+	public void saveprefab()
+	{
+		print ("save pfb" + _newmeshobj);
+		print ("save pfb" + GameObject.Find("CombindeMesh"));
+		if (GameObject.Find("CombindeMesh")) {
+			print ("saving");
+			PrefabUtility.CreatePrefab ("Assets/xxx2.prefab", GameObject.Find("CombindeMesh"), ReplacePrefabOptions.ReplaceNameBased);
+		}
 	}
 
 }

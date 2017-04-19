@@ -14,13 +14,17 @@ public class MakeTerrainEditor : Editor { // extend the Editor class
 		// get a reference to the GameManager script on this target gameObject
 		main _main = (main)target;
 
-		// add a custom button to the Inspector component
-		if(GUILayout.Button("run"))
-		{
-			// if button pressed, then call function in script
-			_main.EditorCall ();//editor 不调用协程
-		}
 
+
+		// add a custom button to the Inspector component
+		if(GUILayout.Button("combine meshs"))
+		{
+			_main.meshcombine ();//EditorCall ();//editor 不调用协程
+		}
+		if(GUILayout.Button("save a prefab"))
+		{
+			_main.saveprefab  ();
+		}
 
 	}
 }
