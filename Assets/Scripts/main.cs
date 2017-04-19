@@ -42,7 +42,7 @@ public class main : MonoBehaviour {
 	bool _havelicense=false;
 
     void Start () {
-	//	print (DateTime.Today + "/ssss//" + DateTime.Today.TimeOfDay);
+		
 		StartCoroutine (findLicense ());
 
     }
@@ -85,6 +85,28 @@ public class main : MonoBehaviour {
 	
 	}
 
+	void Trimlatlng()
+	{
+		Vector2 vecnorthwest;
+		Vector2 vecsoutheast;
+		vecnorthwest.y = Mathf.Max (lat, endlat);
+		vecsoutheast.y = Mathf.Min (lat, endlat);
+		//if (Mathf.Sign (lng) == Mathf.Sign (endlng)) 
+		if(Math.Abs (endlng - lng) < 180){
+			// 内角不跨+-180度则经度小的为西侧
+			vecnorthwest.x = Mathf.Min (lng, endlng);
+			vecsoutheast.x = Mathf.Max (lng, endlng);
+		} else {
+			//内角跨+-180度，经度为负的为东侧
+			vecnorthwest.x = Mathf.Max  (lng, endlng);
+			vecsoutheast.x = Mathf.Min  (lng, endlng);
+		}
+		lat = vecnorthwest.y;
+		lng = vecnorthwest.x;
+		endlat = vecsoutheast.y;
+		endlng = vecsoutheast.x;
+	}
+
 	void makeTrr()
 	{
 		ELEAPIkey = googleELEAPIKey;
@@ -94,14 +116,18 @@ public class main : MonoBehaviour {
 			Debug.LogWarning ("you need ele key");
 			return;
 		}
-		//	Debug.Log("纬度--");
+
+
 		terrmanager = new GameObject();
 		arrTrr = new GameObject[9];
 
-
-
 		terrmanager.name = "TRRMAG";
 
+		if ((lat == endlat) || (lng == endlng)) {
+			Debug.LogWarning ("incorrect geographical coordinate");
+			return;
+		}
+		Trimlatlng ();//处理输入的经纬度信息，保证为西北，东南两点
 
 		//每个分块纬度差
 		float	steplat=(endlat-lat)/3; //(float)Math.Floor(steplat*10)/10;
@@ -128,9 +154,6 @@ public class main : MonoBehaviour {
 
 		print("steplat=" + steplat + "  steplng=" + steplng+" size="+size );//steplat0.5729578steplng3.71444
 
-
-		/////test  img
-		//terrmanager.AddComponent<drawJterrain>().initTrr(lat,lng,endlat,endlng, "Trr00",segment,size,matTrr);
 
 
 		////////////////////////////////
@@ -186,7 +209,7 @@ public class main : MonoBehaviour {
 			//MeshRenderer[] _meshrenders=new MeshRenderer[arrTrr.Length ] ;
 			Material[] _materials = new Material[arrTrr.Length ];
 			for (int i = 0; i < arrTrr.Length; i++) {
-				_materials [i] = arrTrr [i].GetComponent<MeshRenderer > ().material;			
+				_materials [i] = arrTrr [i].GetComponent<MeshRenderer > ().sharedMaterial;			
 			}
 			print ("mat="+_materials [0]);
 
