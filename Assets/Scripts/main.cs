@@ -270,25 +270,21 @@ public class main : MonoBehaviour {
 		if (GameObject.Find ("TRRMAG")) {
 			print ("exist");
 			//MeshRenderer[] _meshrenders=new MeshRenderer[arrTrr.Length ] ;
-			Material[] _materials = new Material[arrTrr.Length];
-			Texture2D[] _textures = new Texture2D[arrTrr.Length];
+			Material[] _materials = new Material[arrTrr.Length ];
 			for (int i = 0; i < arrTrr.Length; i++) {
-				_materials [i] = arrTrr [i].GetComponent<MeshRenderer > ().sharedMaterial;	
-
-				Texture2D tx = _materials[i].GetTexture("_MainTex") as Texture2D; 
-				Texture2D tx2D = new Texture2D(tx.width, tx.height, TextureFormat.ARGB32, false);  
-				var tmp = tx.GetPixels (0, 0, tx.width, tx.height);
-				tx2D.SetPixels(tmp);  
-				tx2D.Apply();  
-				_textures[i] = tx2D;  
+				_materials [i] = arrTrr [i].GetComponent<MeshRenderer > ().sharedMaterial;			
 			}
 			print ("mat="+_materials [0]);
 
-			Material materialNew = new Material(_materials[0].shader);  
-			materialNew.CopyPropertiesFromMaterial(_materials[0]);  
-
 			//---------------- 合并 Mesh -------------------------  
-
+			//MeshFilter[] meshFilters = new MeshFilter[arrTrr.Length ] ;//
+			CombineInstance[] combine = new CombineInstance[arrTrr .Length];     
+			for (int i = 0; i < arrTrr.Length; i++) {
+				combine[i].mesh = arrTrr [i].GetComponent<MeshFilter >().mesh ;
+				combine[i].transform = arrTrr[i].transform.localToWorldMatrix;  
+				arrTrr[i].gameObject.SetActive(false);  
+			}
+			print ("combine--"+combine[0]);
 			//获取arrtrr中所有MeshFilter组件  
 
 			//新建一个gameobj  
@@ -298,41 +294,14 @@ public class main : MonoBehaviour {
 			_newmeshobj.AddComponent<MeshFilter> ();
 
 			_newmeshobj.GetComponent<MeshFilter>().mesh = new Mesh();   
+			//合并Mesh. 第二个false参数, 表示并不合并为一个网格, 而是一个子网格列表  
+			_newmeshobj.GetComponent<MeshFilter>().mesh.CombineMeshes(combine, false);  
+			_newmeshobj.gameObject.SetActive(true);  
 
 			//为合并后的新Mesh指定材质 ------------------------------  
-			Texture2D _texture = new Texture2D(1024,1024);  
-			Rect[] _rects = _texture.PackTextures(_textures, 0, 1024);  
-			byte[] combineTex = _texture.EncodeToPNG ();
-			File.WriteAllBytes ("Assets/Resources/combineTex.png",combineTex);
-			AssetDatabase.Refresh ();
-			_texture = Resources.Load ("combineTex") as Texture2D;
-			materialNew.SetTexture("_MainTex", _texture); 
-			AssetDatabase.CreateAsset (materialNew,"Assets/Resources/combineMat.mat");
-			_newmeshobj.GetComponent<MeshRenderer>().sharedMaterial = materialNew; 
-			CombineInstance[] combine = new CombineInstance[arrTrr .Length];     
-			for (int i = 0; i < arrTrr.Length; i++) {
+			_newmeshobj.GetComponent<MeshRenderer>().sharedMaterials = _materials;   
 
-				Rect rect = _rects[i];  
-				Mesh tmpMesh = arrTrr [i].GetComponent<MeshFilter >().mesh ;
 
-				Vector2[] uvs = new Vector2[tmpMesh.uv.Length];  
-				//把网格的uv根据贴图的rect刷一遍  
-				for (int j = 0; j < uvs.Length; j++)  
-				{  
-					uvs[j].x = rect.x + tmpMesh.uv[j].x * rect.width;  
-					uvs[j].y = rect.y + tmpMesh.uv[j].y * rect.height;  
-				}  
-				tmpMesh.uv = uvs;  
-
-				combine [i].mesh = tmpMesh;
-				combine[i].transform = arrTrr[i].transform.localToWorldMatrix;  
-				arrTrr[i].gameObject.SetActive(false);  
-			}
-			print ("combine--"+combine[0]);
-
-			//合并Mesh. 第二个false参数, 表示并不合并为一个网格, 而是一个子网格列表  
-			_newmeshobj.GetComponent<MeshFilter>().mesh.CombineMeshes(combine, true);  
-			_newmeshobj.gameObject.SetActive(true);  
 		} else {
 			Debug.LogWarning ("run first！");
 		}
@@ -370,5 +339,4 @@ public class main : MonoBehaviour {
 
 		}
 	}
-
 }
