@@ -315,9 +315,11 @@ public class drawJterrain : MonoBehaviour {
 
 			File.WriteAllBytes(strfilename, bytes);
 			AssetDatabase.Refresh ();
+			TextureImporter textureImporter = AssetImporter.GetAtPath(strfilename) as TextureImporter;
+			textureImporter.isReadable = true;
+			AssetDatabase.ImportAsset (strfilename);
 			mapTexture = Resources.Load (dateStr+"/"+Trrname) as Texture2D;
 
-			//mapTexture = tex2d;
 		}
 			DrawTexture ();
 			StartCoroutine(LoadJson(southeastlat));
