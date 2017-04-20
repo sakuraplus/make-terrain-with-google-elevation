@@ -106,7 +106,7 @@ public class main : MonoBehaviour {
 	
 	}
 
-	void Trimlatlng()
+	public void Trimlatlng()
 	{
 		Vector2 vecnorthwest;
 		Vector2 vecsoutheast;
@@ -117,7 +117,15 @@ public class main : MonoBehaviour {
 			// 内角不跨+-180度则经度小的为西侧
 			vecnorthwest.x = Mathf.Min (lng, endlng);
 			vecsoutheast.x = Mathf.Max (lng, endlng);
-		} else {
+		} else if(Math.Abs (endlng - lng) ==180){
+			if (lat > endlat) {
+				vecnorthwest.x = lng;
+				vecsoutheast.x = endlng;
+			} else {
+				vecnorthwest.x = endlng;
+				vecsoutheast.x = lng;
+			}
+		}else {
 			//内角跨+-180度，经度为负的为东侧
 			vecnorthwest.x = Mathf.Max  (lng, endlng);
 			vecsoutheast.x = Mathf.Min  (lng, endlng);
@@ -126,6 +134,7 @@ public class main : MonoBehaviour {
 		lng = vecnorthwest.x;
 		endlat = vecsoutheast.y;
 		endlng = vecsoutheast.x;
+		print ("trim" + lat + "," + lng + "|" + endlat + "," + endlng);
 	}
 
 	void makeTrr()
@@ -141,6 +150,9 @@ public class main : MonoBehaviour {
 			Debug.LogWarning ("incorrect geographical coordinate");
 			return;
 		}
+		if (lat > 85 || lat < -85 || endlat > 85 || endlat < -85) {
+			Debug.LogWarning ("you may not get the right map texture above the +-85 latitude");
+		}
 
 		terrmanager = new GameObject();
 		arrTrr = new GameObject[9];
@@ -155,7 +167,8 @@ public class main : MonoBehaviour {
 		//每个分块经度差
 		//经度差绝对值>180时，取endlng+360计算step.计算后经度超过180的部分在索取数据时处理
 		float	steplng;
-		if (Math.Abs (endlng - lng) > 180) {
+		if (Math.Abs (endlng - lng) >= 180) {
+			//如果=180则认为lat，lng为西北点
 			steplng = (360 + endlng - lng) / 3;
 		} else {
 			steplng = (endlng - lng) / 3;
@@ -217,7 +230,7 @@ public class main : MonoBehaviour {
 		//每个分块经度差
 		//经度差绝对值>180时，取endlng+360计算step.计算后经度超过180的部分在索取数据时处理
 		float	steplngall;
-		if (Math.Abs (endlng - lng) > 180) {
+		if (Math.Abs (endlng - lng) >= 180) {
 			steplngall = (360 + endlng - lng) ;
 		} else {
 			steplngall = (endlng - lng) ;

@@ -32,6 +32,7 @@ public class MakeTerrainEditor : Editor { // extend the Editor class
 		GUILayout.Label ("test" );
 		if(GUILayout.Button("calc size"))
 		{
+			_main.Trimlatlng ();
 			_main.size=_main.calcMeshSize(_main.sizemesh);
 		}
 	}
