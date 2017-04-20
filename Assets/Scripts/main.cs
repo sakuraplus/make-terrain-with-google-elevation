@@ -25,6 +25,7 @@ public class main : MonoBehaviour {
 	public   float endlng = 90;			//终点经度
 
 
+<<<<<<< HEAD
 
 	//[SerializeField,HeaderAttribute ("Default material of each block")]
 	[HideInInspector]
@@ -33,6 +34,13 @@ public class main : MonoBehaviour {
 
 	[SerializeField,Header ("ELE KEY ")]
 	[Tooltip("Get a ELE KEY at developers.google.com/maps/documentation/elevation")]
+=======
+	[SerializeField,HeaderAttribute ("segment one mesh block in  lng,lat")]
+	public Vector2 segment=new Vector2(5,5);//每块地图分段数
+	[SerializeField,HeaderAttribute ("Default material of each block")]
+	public Material matTrr;			//地形预设材质
+	[SerializeField,HeaderAttribute ("Get a ELE KEY at developers.google.com/maps/documentation/elevation")]
+>>>>>>> parent of a890dcb... 修复合并材质问题
 	string  googleELEAPIKey="";
 	[SerializeField,Header ("Get a STM KEY at ")]
 	string  googleSTMAPIKey="";
