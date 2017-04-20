@@ -71,7 +71,7 @@ public class main : MonoBehaviour {
 
 
     void Start () {
-		
+	//	print (DateTime.Today + "/ssss//" + DateTime.Today.TimeOfDay);
 		StartCoroutine (findLicense ());
 
     }
@@ -114,6 +114,7 @@ public class main : MonoBehaviour {
 	
 	}
 
+<<<<<<< HEAD
 	public void Trimlatlng()
 	{
 		Vector2 vecnorthwest;
@@ -145,6 +146,8 @@ public class main : MonoBehaviour {
 		print ("trim" + lat + "," + lng + "|" + endlat + "," + endlng);
 	}
 
+=======
+>>>>>>> parent of 1bb114b... 添加了处理输入的经纬度的功能，允许用户输入东北西南端点
 	void makeTrr()
 	{
 		ELEAPIkey = googleELEAPIKey;
@@ -154,6 +157,7 @@ public class main : MonoBehaviour {
 			Debug.LogWarning ("you need ele key");
 			return;
 		}
+<<<<<<< HEAD
 		if ((lat == endlat) || (lng == endlng)) {
 			Debug.LogWarning ("incorrect geographical coordinate");
 			return;
@@ -162,13 +166,21 @@ public class main : MonoBehaviour {
 			Debug.LogWarning ("you may not get the right map texture above the +-85 latitude");
 		}
 
+=======
+		//	Debug.Log("纬度--");
+>>>>>>> parent of 1bb114b... 添加了处理输入的经纬度的功能，允许用户输入东北西南端点
 		terrmanager = new GameObject();
 		arrTrr = new GameObject[9];
 
+
+
 		terrmanager.name = "TRRMAG";
 
+<<<<<<< HEAD
 	
 		Trimlatlng ();//处理输入的经纬度信息，保证为西北，东南两点
+=======
+>>>>>>> parent of 1bb114b... 添加了处理输入的经纬度的功能，允许用户输入东北西南端点
 
 		//每个分块纬度差
 		float	steplat=(endlat-lat)/3; //(float)Math.Floor(steplat*10)/10;
@@ -183,6 +195,9 @@ public class main : MonoBehaviour {
 		}
 
 		size = calcMeshSize (sizemesh);//以纬度方向size y计算经度方向距离x
+
+		/////test  img
+		//terrmanager.AddComponent<drawJterrain>().initTrr(lat,lng,endlat,endlng, "Trr00",segment,size,matTrr);
 
 
 		////////////////////////////////
@@ -280,7 +295,7 @@ public class main : MonoBehaviour {
 			//MeshRenderer[] _meshrenders=new MeshRenderer[arrTrr.Length ] ;
 			Material[] _materials = new Material[arrTrr.Length ];
 			for (int i = 0; i < arrTrr.Length; i++) {
-				_materials [i] = arrTrr [i].GetComponent<MeshRenderer > ().sharedMaterial;			
+				_materials [i] = arrTrr [i].GetComponent<MeshRenderer > ().material;			
 			}
 			print ("mat="+_materials [0]);
 
