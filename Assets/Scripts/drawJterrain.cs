@@ -1,5 +1,5 @@
 ﻿using UnityEngine;  
-using UnityEditor;  
+//using UnityEditor;  
 using System.Collections;  
 
 using System;
@@ -300,24 +300,33 @@ public class drawJterrain : MonoBehaviour {
 			byte[] bytes = tex2d.EncodeToPNG();  
 			/////////////
 
-			string baseResultFolder = "Assets/Resources/";
-			string  dateStr = DateTime.Now.ToString("yyyy-MM-dd");
-			baseResultFolder += dateStr;
+//			string baseResultFolder = "Assets/Resources/";
+//			string dateStr = main.savefiledate;// DateTime.Now.ToString("yyyy-MM-dd");
+//			baseResultFolder += dateStr;
         //string baseResultFullPath = Path.Combine(Application.dataPath, "MTT_Results");
-			if (!Directory.Exists(baseResultFolder)) 
+
+			//string filepathMaterial = "Assets/Resources/" + main.savefiledate;
+//			if (! Directory.Exists(filepathMaterial)) 
+//			{
+//				Directory.CreateDirectory(filepathMaterial);
+//			}
+//
+//			File.WriteAllBytes (filepathMaterial+ "/combineTex.png",combineTex);
+//			//File.WriteAllBytes ("Assets/Resources/combineTex.png",combineTex);
+//			AssetDatabase.Refresh ();
+//			_texture = Resources.Load (filepathMaterial+"/combineTex") as Texture2D;
+
+			string filepathImg="Assets/Resources/" + main.savefiledate+"/downloadImg";
+			if (!Directory.Exists(filepathImg)) 
 			{
-				Directory.CreateDirectory(baseResultFolder);
-			}
-	      
-
-			///////////////
-			string strfilename=baseResultFolder+"/"+Trrname +".png";
-
+				Directory.CreateDirectory(filepathImg);
+			}     
+			string strfilename=filepathImg+"/"+Trrname +".png";
+			print ("imgfilename=" + strfilename);
 			File.WriteAllBytes(strfilename, bytes);
-			AssetDatabase.Refresh ();
-			mapTexture = Resources.Load (dateStr+"/"+Trrname) as Texture2D;
 
-			//mapTexture = tex2d;
+			mapTexture = tex2d;
+
 		}
 			DrawTexture ();
 			StartCoroutine(LoadJson(southeastlat));
@@ -333,9 +342,7 @@ public class drawJterrain : MonoBehaviour {
 	private void DrawMesh()
 	{
 		Mesh mesh = terrain.AddComponent<MeshFilter>().mesh;
-
-
-        //给mesh 赋值
+		//给mesh 赋值
         mesh.Clear();
 		mesh.vertices = vertives;//,pos);
 		mesh.uv = uvs;
@@ -344,6 +351,7 @@ public class drawJterrain : MonoBehaviour {
 		mesh.RecalculateNormals();
 		//重置范围
 		mesh.RecalculateBounds();
+		main.NumComplete++;
 //		DrawTexture ();
         ////////////////////////
 //        terrain.AddComponent<MeshCollider>();
@@ -351,34 +359,24 @@ public class drawJterrain : MonoBehaviour {
 //        terrain.GetComponent<MeshCollider>().convex = true;
 //		SaveAsset();
     }
+
 	private void DrawTexture(){
-	
+			
 		terrain.AddComponent<MeshRenderer>();
+
+
 		if (diffuseMap == null)
 		{
-			//没设定diffuseMap则使用加载的贴图，如果没有加载则使用默认材质
 			diffuseMap = new Material(Shader.Find("Standard"));
-
-			string baseResultFolder="Assets/ResultMesh/";
-			string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
-			baseResultFolder += dateStr;
-			//string baseResultFullPath = Path.Combine(Application.dataPath, "MTT_Results");
-			if (!Directory.Exists(baseResultFolder)) 
-			{
-				Directory.CreateDirectory(baseResultFolder);
-			}
-
-
-			///////////////
-			string strfilename=baseResultFolder+"/"+Trrname +".mat";
-			AssetDatabase.CreateAsset(diffuseMap, strfilename);  
-
 			if(mapTexture!=null){
 				diffuseMap.SetTexture ("_MainTex",mapTexture);
 			}
+
 		}
 		terrain.GetComponent<Renderer>().material = diffuseMap;
 	}
+
+
 
 
 	//设定每个顶点的uv
@@ -429,22 +427,5 @@ public class drawJterrain : MonoBehaviour {
 	/// 
 	/// 
 	/// 
-//    void SaveAsset()  
-//    {  
-//		string baseResultFolder="Assets/ResultMesh/";
-//		string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
-//		baseResultFolder += dateStr;
-//		//string baseResultFullPath = Path.Combine(Application.dataPath, "MTT_Results");
-//		if (!Directory.Exists(baseResultFolder)) 
-//		{
-//			Directory.CreateDirectory(baseResultFolder);
-//		}
-//
-//
-//		///////////////
-//		string strfilename=baseResultFolder+"/"+Trrname +".asset";
-//        Mesh m1 = terrain . GetComponent<MeshFilter>().mesh;  
-//		AssetDatabase.CreateAsset(m1, strfilename);  
-//    }  
-	
+
 }

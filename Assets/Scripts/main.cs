@@ -1,5 +1,5 @@
 using UnityEngine;  
-using UnityEditor;  
+//using UnityEditor;  
 using System.Collections;  
 
 using System;
@@ -10,7 +10,7 @@ using System.IO;
 public class main : MonoBehaviour {
 
     GameObject terrmanager;//= new GameObject();
-    GameObject[] arrTrr;//= new GameObject[9];
+  	public  GameObject[] arrTrr;//= new GameObject[9];
 
 	[Header("latitude and longitude of the northwest")]
 	[Range (-90,90)]
@@ -55,15 +55,17 @@ public class main : MonoBehaviour {
 	[Range (0.01f,1000f)]
 	float heightScale=1f;
 
+	[HideInInspector ]
+	public GameObject _newmeshobj;//=new GameObject ();
 
     const float earthR = 6371000;//地球半径
 	[SerializeField]
 	bool _havelicense=false;
 
-
-
+	public static  string savefiledate;
+	public static  int NumComplete;
     void Start () {
-		
+		NumComplete = 0;
 		StartCoroutine (findLicense ());
 
     }
@@ -139,6 +141,8 @@ public class main : MonoBehaviour {
 
 	void makeTrr()
 	{
+		savefiledate=DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+		print ("savefiledate="+savefiledate);
 		ELEAPIkey = googleELEAPIKey;
 		STMAPIkey = googleSTMAPIKey;
 		if (ELEAPIkey.Length < 1) {
@@ -217,7 +221,7 @@ public class main : MonoBehaviour {
 		arrTrr[8].transform.Translate(new Vector3(size.x	 , -50,-1*size.z));
 
 
-
+		 _newmeshobj=new GameObject ();
 
 	}
 
@@ -254,89 +258,4 @@ public class main : MonoBehaviour {
 
 
 
-//	public float RefreshHeight()
-//	{
-//		for (int i = 0; i < arrTrr.Length; i++) {
-//		arrTrr[i].
-//		}
-//	}
-
-
-	GameObject _newmeshobj;
-	public void meshcombine()
-	{
-		print (terrmanager);
-		print (GameObject.Find ("TRRMAG"));
-		if (GameObject.Find ("TRRMAG")) {
-			print ("exist");
-			//MeshRenderer[] _meshrenders=new MeshRenderer[arrTrr.Length ] ;
-			Material[] _materials = new Material[arrTrr.Length ];
-			for (int i = 0; i < arrTrr.Length; i++) {
-				_materials [i] = arrTrr [i].GetComponent<MeshRenderer > ().sharedMaterial;			
-			}
-			print ("mat="+_materials [0]);
-
-			//---------------- 合并 Mesh -------------------------  
-			//MeshFilter[] meshFilters = new MeshFilter[arrTrr.Length ] ;//
-			CombineInstance[] combine = new CombineInstance[arrTrr .Length];     
-			for (int i = 0; i < arrTrr.Length; i++) {
-				combine[i].mesh = arrTrr [i].GetComponent<MeshFilter >().mesh ;
-				combine[i].transform = arrTrr[i].transform.localToWorldMatrix;  
-				arrTrr[i].gameObject.SetActive(false);  
-			}
-			print ("combine--"+combine[0]);
-			//获取arrtrr中所有MeshFilter组件  
-
-			//新建一个gameobj  
-			_newmeshobj=new GameObject();
-			_newmeshobj.name = "CombindeMesh";
-			_newmeshobj.AddComponent<MeshRenderer > ();
-			_newmeshobj.AddComponent<MeshFilter> ();
-
-			_newmeshobj.GetComponent<MeshFilter>().mesh = new Mesh();   
-			//合并Mesh. 第二个false参数, 表示并不合并为一个网格, 而是一个子网格列表  
-			_newmeshobj.GetComponent<MeshFilter>().mesh.CombineMeshes(combine, false);  
-			_newmeshobj.gameObject.SetActive(true);  
-
-			//为合并后的新Mesh指定材质 ------------------------------  
-			_newmeshobj.GetComponent<MeshRenderer>().sharedMaterials = _materials;   
-
-
-		} else {
-			Debug.LogWarning ("run first！");
-		}
-	}
-	public void saveprefab()
-	{
-		print ("save pfb" + _newmeshobj);
-		print ("save pfb" + "Assets/savePrefab"+DateTime.Now.ToString("MM-dd HH-mm")+".prefab");
-		if (_newmeshobj) {
-			print ("saving");
-			string savefilepath="Assets/savePrefab"+DateTime.Now.ToString("MM-dd HH-mm")+".prefab";
-			PrefabUtility.CreatePrefab (savefilepath, GameObject.Find("CombindeMesh"), ReplacePrefabOptions.ReplaceNameBased);
-		}else{
-			Debug.LogWarning ("obj not found,run first");
-
-		}
-	}
-	public void savemesh()
-	{
-		if (_newmeshobj) {
-					//////////////////////////////保存一个mesh
-					string baseResultFolder="Assets/savemesh";
-					string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
-					baseResultFolder += dateStr;
-					if (!Directory.Exists(baseResultFolder)) 
-					{
-						Directory.CreateDirectory(baseResultFolder);
-					}
-					string strfilename=baseResultFolder+"/aaa" +".asset";
-					Mesh m1 = _newmeshobj . GetComponent<MeshFilter>().mesh;  
-					AssetDatabase.CreateAsset(m1, strfilename);  
-					//////////////////////////////////end 保存一个mesh
-		}else{
-			Debug.LogWarning ("obj not found,run first");
-
-		}
-	}
 }
