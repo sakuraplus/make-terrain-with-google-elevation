@@ -55,6 +55,7 @@ public class drawJterrain : MonoBehaviour {
 
 	float sizelat=100;
 	float  sizelng=100;
+	float additionheight=1;
 
 
     private Vector2[] uvs;
@@ -65,19 +66,20 @@ public class drawJterrain : MonoBehaviour {
 
 	private GameObject terrain;
 
-	Texture mapTexture;
+	Texture2D mapTexture;
 
 //    public string  test()
 //    {
 //       return terrain.name;
 //    }
 
-	public void initTrr(float _northwestlat,float _northwestlng, float _southeastlat, float _southeastlng, string _Trrname,Vector2 _segment,Vector2 _size, Material _matTrr = null)
+	public void initTrr(float _northwestlat,float _northwestlng, float _southeastlat, float _southeastlng, string _Trrname,Vector2 _segment,Vector3 _size, Material _matTrr = null)
     {
 		diffuseMap = _matTrr;
 
-		sizelat = _size.y;
+		sizelat = _size.z;
 		sizelng = _size.x;
+		additionheight = _size.y;
 
         Trrname = _Trrname;
 
@@ -186,8 +188,8 @@ public class drawJterrain : MonoBehaviour {
 				JsonMapData GoogleJsonData = JsonUtility.FromJson<JsonMapData>(StrWwwData);
 				for (int i=0; i < GoogleJsonData.results.Length ; i++)		
                 {
-					vertives[indVertives + i]= new Vector3(i*sizelat /segment.x, float.Parse(GoogleJsonData.results[i].elevation.ToString()) 
-						/ 100, (indVertives / GoogleJsonData.results.Length) * sizelng/segment.y);
+					vertives[indVertives + i]= new Vector3(i*sizelng /segment.x, float.Parse(GoogleJsonData.results[i].elevation.ToString()) 
+						*additionheight , (indVertives / GoogleJsonData.results.Length) * sizelat/segment.y);
 					 //100/x方向分段数=顶点坐标，高度/100=顶点z，为多边形的
 					tempstr +=GoogleJsonData.results[i].location.lat.ToString()+","+GoogleJsonData.results[i].location.lng.ToString()+vertives[indVertives + i].ToString ();//测试数据
 
@@ -289,7 +291,7 @@ public class drawJterrain : MonoBehaviour {
 		yield return www_data;  
 
 		if (www_data.error != null) {
-			print (Trrname +"Load img error" + www_data.error);
+			Debug.LogWarning  (Trrname +"Load img error" + www_data.error);
 		}else{
 			print (Trrname + "loaded img" );
 			//text
@@ -298,8 +300,8 @@ public class drawJterrain : MonoBehaviour {
 			byte[] bytes = tex2d.EncodeToPNG();  
 			/////////////
 
-		 	string baseResultFolder = "Assets/downloadImg/";
-			string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+			string baseResultFolder = "Assets/Resources/";
+			string  dateStr = DateTime.Now.ToString("yyyy-MM-dd");
 			baseResultFolder += dateStr;
         //string baseResultFullPath = Path.Combine(Application.dataPath, "MTT_Results");
 			if (!Directory.Exists(baseResultFolder)) 
@@ -310,8 +312,12 @@ public class drawJterrain : MonoBehaviour {
 
 			///////////////
 			string strfilename=baseResultFolder+"/"+Trrname +".png";
+
 			File.WriteAllBytes(strfilename, bytes);
-			mapTexture = tex2d;
+			AssetDatabase.Refresh ();
+			mapTexture = Resources.Load (dateStr+"/"+Trrname) as Texture2D;
+
+			//mapTexture = tex2d;
 		}
 			DrawTexture ();
 			StartCoroutine(LoadJson(southeastlat));
@@ -324,7 +330,7 @@ public class drawJterrain : MonoBehaviour {
 
 
   //
-		private void DrawMesh()
+	private void DrawMesh()
 	{
 		Mesh mesh = terrain.AddComponent<MeshFilter>().mesh;
 
@@ -343,7 +349,7 @@ public class drawJterrain : MonoBehaviour {
 //        terrain.AddComponent<MeshCollider>();
 //        terrain.GetComponent<MeshCollider>().sharedMesh = mesh ;
 //        terrain.GetComponent<MeshCollider>().convex = true;
-		SaveAsset();
+//		SaveAsset();
     }
 	private void DrawTexture(){
 	
@@ -352,6 +358,21 @@ public class drawJterrain : MonoBehaviour {
 		{
 			//没设定diffuseMap则使用加载的贴图，如果没有加载则使用默认材质
 			diffuseMap = new Material(Shader.Find("Standard"));
+
+			string baseResultFolder="Assets/ResultMesh/";
+			string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+			baseResultFolder += dateStr;
+			//string baseResultFullPath = Path.Combine(Application.dataPath, "MTT_Results");
+			if (!Directory.Exists(baseResultFolder)) 
+			{
+				Directory.CreateDirectory(baseResultFolder);
+			}
+
+
+			///////////////
+			string strfilename=baseResultFolder+"/"+Trrname +".mat";
+			AssetDatabase.CreateAsset(diffuseMap, strfilename);  
+
 			if(mapTexture!=null){
 				diffuseMap.SetTexture ("_MainTex",mapTexture);
 			}
@@ -408,22 +429,22 @@ public class drawJterrain : MonoBehaviour {
 	/// 
 	/// 
 	/// 
-    void SaveAsset()  
-    {  
-		string baseResultFolder="Assets/ResultMesh/";
-		string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
-		baseResultFolder += dateStr;
-		//string baseResultFullPath = Path.Combine(Application.dataPath, "MTT_Results");
-		if (!Directory.Exists(baseResultFolder)) 
-		{
-			Directory.CreateDirectory(baseResultFolder);
-		}
-
-
-		///////////////
-		string strfilename=baseResultFolder+"/"+Trrname +".asset";
-        Mesh m1 = terrain . GetComponent<MeshFilter>().mesh;  
-		AssetDatabase.CreateAsset(m1, strfilename);  
-    }  
+//    void SaveAsset()  
+//    {  
+//		string baseResultFolder="Assets/ResultMesh/";
+//		string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+//		baseResultFolder += dateStr;
+//		//string baseResultFullPath = Path.Combine(Application.dataPath, "MTT_Results");
+//		if (!Directory.Exists(baseResultFolder)) 
+//		{
+//			Directory.CreateDirectory(baseResultFolder);
+//		}
+//
+//
+//		///////////////
+//		string strfilename=baseResultFolder+"/"+Trrname +".asset";
+//        Mesh m1 = terrain . GetComponent<MeshFilter>().mesh;  
+//		AssetDatabase.CreateAsset(m1, strfilename);  
+//    }  
 	
 }

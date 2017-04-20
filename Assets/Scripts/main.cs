@@ -11,23 +11,20 @@ public class main : MonoBehaviour {
 
     GameObject terrmanager;//= new GameObject();
     GameObject[] arrTrr;//= new GameObject[9];
-	[SerializeField,HeaderAttribute ("latitude and longitude of the northwest")]
+
+	[Header("latitude and longitude of the northwest")]
 	[Range (-90,90)]
 	public   float lat = 30;			//起点纬度，北极90，南极-90
 	[Range (-180,180)]
 	public   float lng = 70;			//起点经度，英国东方为正，应该西方为负
 
-	[SerializeField,HeaderAttribute ("latitude and longitude of the southeast")]
+	[Header ("latitude and longitude of the southeast")]
 	[Range (-90,90)]
 	public   float endlat = 20;			//终点纬度
 	[Range (-180,180)]
 	public   float endlng = 90;			//终点经度
 
-	[SerializeField,HeaderAttribute ("size of the mesh")]
-	public Vector2 size = new Vector2 (100, 100);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 	//[SerializeField,HeaderAttribute ("Default material of each block")]
 	[HideInInspector]
@@ -36,33 +33,37 @@ public class main : MonoBehaviour {
 
 	[SerializeField,Header ("ELE KEY ")]
 	[Tooltip("Get a ELE KEY at developers.google.com/maps/documentation/elevation")]
-=======
-	[SerializeField,HeaderAttribute ("segment one mesh block in  lng,lat")]
-	public Vector2 segment=new Vector2(5,5);//每块地图分段数
-	[SerializeField,HeaderAttribute ("Default material of each block")]
-	public Material matTrr;			//地形预设材质
-	[SerializeField,HeaderAttribute ("Get a ELE KEY at developers.google.com/maps/documentation/elevation")]
->>>>>>> parent of a890dcb... 修复合并材质问题
-=======
-	[SerializeField,HeaderAttribute ("segment one mesh block in  lng,lat")]
-	public Vector2 segment=new Vector2(5,5);//每块地图分段数
-	[SerializeField,HeaderAttribute ("Default material of each block")]
-	[HideInInspector]
-	public Material matTrr;			//地形预设材质
-	[SerializeField,HeaderAttribute ("Get a ELE KEY at developers.google.com/maps/documentation/elevation")]
->>>>>>> parent of 23b11c4... 增加根据真实比例绘制高度的功能
 	string  googleELEAPIKey="";
-	[SerializeField,HeaderAttribute ("Get a STM KEY at ")]
+	[SerializeField,Header ("Get a STM KEY at ")]
 	string  googleSTMAPIKey="";
+	[Space(20)]
 	public static string ELEAPIkey;
 	public static string STMAPIkey;
 	//https://developers.google.com/maps/documentation/elevation/start?
-    const float earthR = 100;//地球半径
+
+	[SerializeField,HeaderAttribute ("segment one mesh block in  lng,lat")]
+	public Vector2 segment=new Vector2(5,5);//每块地图分段数
+
+	[Header( "size of the mesh in lat")]
+	public float sizemesh=100;
+
+//	[SerializeField,  HeaderAttribute ("size of the mesh")]
+	[HideInInspector]
+	public  Vector3 size = new Vector3 (100, 100,1);
+	[SerializeField,Header("the addition of real height data")]
+	[Tooltip("1 means the real scale")]
+	[Range (0.01f,1000f)]
+	float heightScale=1f;
+
+
+    const float earthR = 6371000;//地球半径
 	[SerializeField]
 	bool _havelicense=false;
 
+
+
     void Start () {
-	//	print (DateTime.Today + "/ssss//" + DateTime.Today.TimeOfDay);
+		
 		StartCoroutine (findLicense ());
 
     }
@@ -105,7 +106,6 @@ public class main : MonoBehaviour {
 	
 	}
 
-<<<<<<< HEAD
 	public void Trimlatlng()
 	{
 		Vector2 vecnorthwest;
@@ -137,8 +137,6 @@ public class main : MonoBehaviour {
 		print ("trim" + lat + "," + lng + "|" + endlat + "," + endlng);
 	}
 
-=======
->>>>>>> parent of 1bb114b... 添加了处理输入的经纬度的功能，允许用户输入东北西南端点
 	void makeTrr()
 	{
 		ELEAPIkey = googleELEAPIKey;
@@ -148,8 +146,6 @@ public class main : MonoBehaviour {
 			Debug.LogWarning ("you need ele key");
 			return;
 		}
-<<<<<<< HEAD
-<<<<<<< HEAD
 		if ((lat == endlat) || (lng == endlng)) {
 			Debug.LogWarning ("incorrect geographical coordinate");
 			return;
@@ -157,32 +153,14 @@ public class main : MonoBehaviour {
 		if (lat > 85 || lat < -85 || endlat > 85 || endlat < -85) {
 			Debug.LogWarning ("you may not get the right map texture above the +-85 latitude");
 		}
-=======
 
->>>>>>> parent of 23b11c4... 增加根据真实比例绘制高度的功能
-
-=======
-		//	Debug.Log("纬度--");
->>>>>>> parent of 1bb114b... 添加了处理输入的经纬度的功能，允许用户输入东北西南端点
 		terrmanager = new GameObject();
 		arrTrr = new GameObject[9];
 
-
-
 		terrmanager.name = "TRRMAG";
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 	
-=======
-		if ((lat == endlat) || (lng == endlng)) {
-			Debug.LogWarning ("incorrect geographical coordinate");
-			return;
-		}
->>>>>>> parent of 23b11c4... 增加根据真实比例绘制高度的功能
 		Trimlatlng ();//处理输入的经纬度信息，保证为西北，东南两点
-=======
->>>>>>> parent of 1bb114b... 添加了处理输入的经纬度的功能，允许用户输入东北西南端点
 
 		//每个分块纬度差
 		float	steplat=(endlat-lat)/3; //(float)Math.Floor(steplat*10)/10;
@@ -196,23 +174,7 @@ public class main : MonoBehaviour {
 			steplng = (endlng - lng) / 3;
 		}
 
-
-		//=(endlng-lng)/3;// (float)Math.Floor(steplng*10)/10;
-		//计算每个地图块终点经纬度
-
-
-		float ttt=(endlat+lat)/2;
-		ttt = Mathf.PI * ttt / 180;//
-		//print ("endlat-lat)/2=" + ttt+ "   cos (ttt)="+Mathf.Cos (ttt)+"  ///"+Mathf.Acos(ttt));
-		ttt= size.x * Mathf.Abs (Mathf.Cos(ttt ));
-		print ("Math.Abs (Math.Cos(ttt ))" + ttt);
-		size.y = ttt * Mathf.Abs (steplng / steplat);;
-
-		print("steplat=" + steplat + "  steplng=" + steplng+" size="+size );//steplat0.5729578steplng3.71444
-
-
-		/////test  img
-		//terrmanager.AddComponent<drawJterrain>().initTrr(lat,lng,endlat,endlng, "Trr00",segment,size,matTrr);
+		size = calcMeshSize (sizemesh);//以纬度方向size y计算经度方向距离x
 
 
 		////////////////////////////////
@@ -244,21 +206,20 @@ public class main : MonoBehaviour {
 			arrTrr [i].transform.parent = terrmanager.transform;
 		}
 
-		arrTrr[0].transform.Translate(new Vector3(-1*size.y, -50, size.x));
-		arrTrr[1].transform.Translate(new Vector3(-1*size.y, -50, 0));
-		arrTrr[2].transform.Translate(new Vector3(-1*size.y , -50, -1*size.x));
-		arrTrr[3].transform.Translate(new Vector3(0		, -50, size.x));
+		arrTrr[0].transform.Translate(new Vector3(-1*size.x, -50, size.z));
+		arrTrr[1].transform.Translate(new Vector3(-1*size.x, -50, 0));
+		arrTrr[2].transform.Translate(new Vector3(-1*size.x , -50, -1*size.z));
+		arrTrr[3].transform.Translate(new Vector3(0		, -50, size.z));
 		arrTrr[4].transform.Translate(new Vector3(0		, -50, 0));
-		arrTrr[5].transform.Translate(new Vector3(0		 , -50,-1*size.x));
-		arrTrr[6].transform.Translate(new Vector3(size.y	, -50, size.x));
-		arrTrr[7].transform.Translate(new Vector3(size.y	, -50 ,0));
-		arrTrr[8].transform.Translate(new Vector3(size.y	 , -50,-1*size.x));
+		arrTrr[5].transform.Translate(new Vector3(0		 , -50,-1*size.z));
+		arrTrr[6].transform.Translate(new Vector3(size.x	, -50, size.z));
+		arrTrr[7].transform.Translate(new Vector3(size.x	, -50 ,0));
+		arrTrr[8].transform.Translate(new Vector3(size.x	 , -50,-1*size.z));
 
 
 
 
 	}
-<<<<<<< HEAD
 
 
 	public Vector3 calcMeshSize(float sizelat)
@@ -301,8 +262,6 @@ public class main : MonoBehaviour {
 //	}
 
 
-=======
->>>>>>> parent of 23b11c4... 增加根据真实比例绘制高度的功能
 	GameObject _newmeshobj;
 	public void meshcombine()
 	{
@@ -313,7 +272,7 @@ public class main : MonoBehaviour {
 			//MeshRenderer[] _meshrenders=new MeshRenderer[arrTrr.Length ] ;
 			Material[] _materials = new Material[arrTrr.Length ];
 			for (int i = 0; i < arrTrr.Length; i++) {
-				_materials [i] = arrTrr [i].GetComponent<MeshRenderer > ().material;			
+				_materials [i] = arrTrr [i].GetComponent<MeshRenderer > ().sharedMaterial;			
 			}
 			print ("mat="+_materials [0]);
 
@@ -342,18 +301,6 @@ public class main : MonoBehaviour {
 			//为合并后的新Mesh指定材质 ------------------------------  
 			_newmeshobj.GetComponent<MeshRenderer>().sharedMaterials = _materials;   
 
-			//////////////////////////////保存一个mesh
-			string baseResultFolder="Assets/";
-			string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
-			baseResultFolder += dateStr;
-			if (!Directory.Exists(baseResultFolder)) 
-			{
-				Directory.CreateDirectory(baseResultFolder);
-			}
-			string strfilename=baseResultFolder+"/aaa" +".asset";
-			Mesh m1 = _newmeshobj . GetComponent<MeshFilter>().mesh;  
-			AssetDatabase.CreateAsset(m1, strfilename);  
-			//////////////////////////////////end 保存一个mesh
 
 		} else {
 			Debug.LogWarning ("run first！");
@@ -362,11 +309,34 @@ public class main : MonoBehaviour {
 	public void saveprefab()
 	{
 		print ("save pfb" + _newmeshobj);
-		print ("save pfb" + GameObject.Find("CombindeMesh"));
-		if (GameObject.Find("CombindeMesh")) {
+		print ("save pfb" + "Assets/savePrefab"+DateTime.Now.ToString("MM-dd HH-mm")+".prefab");
+		if (_newmeshobj) {
 			print ("saving");
-			PrefabUtility.CreatePrefab ("Assets/xxx2.prefab", GameObject.Find("CombindeMesh"), ReplacePrefabOptions.ReplaceNameBased);
+			string savefilepath="Assets/savePrefab"+DateTime.Now.ToString("MM-dd HH-mm")+".prefab";
+			PrefabUtility.CreatePrefab (savefilepath, GameObject.Find("CombindeMesh"), ReplacePrefabOptions.ReplaceNameBased);
+		}else{
+			Debug.LogWarning ("obj not found,run first");
+
 		}
 	}
+	public void savemesh()
+	{
+		if (_newmeshobj) {
+					//////////////////////////////保存一个mesh
+					string baseResultFolder="Assets/savemesh";
+					string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+					baseResultFolder += dateStr;
+					if (!Directory.Exists(baseResultFolder)) 
+					{
+						Directory.CreateDirectory(baseResultFolder);
+					}
+					string strfilename=baseResultFolder+"/aaa" +".asset";
+					Mesh m1 = _newmeshobj . GetComponent<MeshFilter>().mesh;  
+					AssetDatabase.CreateAsset(m1, strfilename);  
+					//////////////////////////////////end 保存一个mesh
+		}else{
+			Debug.LogWarning ("obj not found,run first");
 
+		}
+	}
 }
