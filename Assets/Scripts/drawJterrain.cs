@@ -110,7 +110,8 @@ public class drawJterrain : MonoBehaviour {
 //		testVertives();//测试segment xy不同时生成mesh,不读google数据
 
 		//没输入staticmap的key则不加载贴图
-		if (STMKey.Length >1 || diffuseMap !=null ) {
+		//if (STMKey.Length >1 && diffuseMap ==null ) {
+		if (STMKey.Length >1  ) {
 			StartCoroutine (loadimg ());
 		} else {
 			DrawTexture ();
@@ -179,7 +180,8 @@ public class drawJterrain : MonoBehaviour {
 		{    
 			Debug.Log("error :"+Trrname +"/"+indVertives +"-" + www_data.error );
 
-			StrWwwData =  "error :" + www_data.error;    
+			StrWwwData =  "error :" + www_data.error;  
+			main.NumError++;
 		}    
 		else    
 		{    
@@ -286,12 +288,22 @@ public class drawJterrain : MonoBehaviour {
 		ipaddress += "&size=" + sizemapx + "x" + sizemapy + "&maptype="+strmaptype + "&key=";
 		ipaddress += STMKey;
 
+
+//		//////////测试数据错误时
+//		System.Random rm=new System.Random();
+//		if (rm.Next (4) > 1) {
+//			ipaddress = "https://maps";
+//		}
+//		/// 
+
+
 		print (Trrname+"  loadimg  "+ipaddress );
 		WWW www_data = new WWW(ipaddress);  
 		yield return www_data;  
 
 		if (www_data.error != null) {
 			Debug.LogWarning  (Trrname +"Load img error" + www_data.error);
+			main.NumError++;//出错时计数，用于确定是否所有块都完成工作
 		}else{
 			print (Trrname + "loaded img" );
 			//text
@@ -300,21 +312,6 @@ public class drawJterrain : MonoBehaviour {
 			byte[] bytes = tex2d.EncodeToPNG();  
 			/////////////
 
-//			string baseResultFolder = "Assets/Resources/";
-//			string dateStr = main.savefiledate;// DateTime.Now.ToString("yyyy-MM-dd");
-//			baseResultFolder += dateStr;
-        //string baseResultFullPath = Path.Combine(Application.dataPath, "MTT_Results");
-
-			//string filepathMaterial = "Assets/Resources/" + main.savefiledate;
-//			if (! Directory.Exists(filepathMaterial)) 
-//			{
-//				Directory.CreateDirectory(filepathMaterial);
-//			}
-//
-//			File.WriteAllBytes (filepathMaterial+ "/combineTex.png",combineTex);
-//			//File.WriteAllBytes ("Assets/Resources/combineTex.png",combineTex);
-//			AssetDatabase.Refresh ();
-//			_texture = Resources.Load (filepathMaterial+"/combineTex") as Texture2D;
 
 			string filepathImg="Assets/Resources/" + main.savefiledate+"/downloadImg";
 			if (!Directory.Exists(filepathImg)) 
@@ -327,9 +324,11 @@ public class drawJterrain : MonoBehaviour {
 
 			mapTexture = tex2d;
 
-		}
 			DrawTexture ();
 			StartCoroutine(LoadJson(southeastlat));
+
+		}
+			
 	}
 
 
@@ -351,7 +350,7 @@ public class drawJterrain : MonoBehaviour {
 		mesh.RecalculateNormals();
 		//重置范围
 		mesh.RecalculateBounds();
-		main.NumComplete++;
+		main.NumComplete++;//加载成功计数。用于计算是否所有块都完成
 //		DrawTexture ();
         ////////////////////////
 //        terrain.AddComponent<MeshCollider>();

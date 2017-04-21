@@ -10,6 +10,15 @@ public class MakeTerrainEditor : Editor { // extend the Editor class
 	// called when Unity Editor Inspector is updated
 	public override void OnInspectorGUI()
 	{
+		if(GUILayout.Button("get elevation API key"))
+		{
+			Application.OpenURL ("https://developers.google.com/maps/documentation/elevation/start?");
+		}
+		if(GUILayout.Button("get staticmap API key"))
+		{
+			Application.OpenURL ("https://developers.google.com/maps/documentation/static-maps/");
+		}
+
 		// show the default inspector stuff for this component
 		DrawDefaultInspector();
 
@@ -18,56 +27,91 @@ public class MakeTerrainEditor : Editor { // extend the Editor class
 
 		GUILayout.Label ("mesh size="+_main.size.ToString () );
 
-		// add a custom button to the Inspector component
+
 		if(GUILayout.Button("combine meshs"))
 		{
 			meshcombine (_main._newmeshobj,_main.arrTrr );
-
-		//	_main.meshcombine ();//EditorCall ();//editor 不调用协程
 		}
 		if(GUILayout.Button("save as prefab"))
 		{
 			savemesh   (_main._newmeshobj);
 			saveprefab (_main._newmeshobj );
-			//_main.saveprefab  ();
 		}
 		if(GUILayout.Button("save as mesh only"))
 		{
-
 			savemesh   (_main._newmeshobj);
-			//_main.savemesh   ();
 		}
+	
+		//测试用
 		GUILayout.Label ("test" );
 		if(GUILayout.Button("test"))
 		{
-			//_main.Trimlatlng ();
-			//_main.size=_main.calcMeshSize(_main.sizemesh);
-			Debug.Log("test"+  main.savefiledate); 
-			Texture2D _texture = Resources.Load ("combineTex201704202126") as Texture2D;
-			Debug.Log("1 _texture="+_texture );
-			_texture = Resources.Load ("2017-04-20 21-26/combineTex201704202126") as Texture2D;
-			Debug.Log("2 _texture="+_texture );
-			_texture = Resources.Load ("combineTex201704202126.png") as Texture2D;
-			Debug.Log("3 _texture="+_texture );
-			_texture = Resources.Load ("Resources/2017-04-20 21-26/combineTex201704202126.png") as Texture2D;
-			Debug.Log("4 _texture="+_texture );
-			//Debug.Log("test"+  _main.savefiledate); //
+			Debug.Log ("num=" + main.NumComplete);
+			Debug.Log( DateTime.Now.ToString("HH-mm"));
+			meshcombinetest (_main._newmeshobj,_main.arrTrr );
+//			if (EditorUtility.DisplayDialog ("Delete all player preferences?",
+//				    "Are you sure you want to delete all the player preferences, this action cannot be undone?",
+//				    "Yes",
+//				    "No")) {
+//				Debug.Log ("uuuuuu");
+//			}	
 
 		}
+	
 	}
 
 
-	/// 
+	///测试用
+	void meshcombinetest(GameObject _newmeshobj,GameObject[] arrTrr)
+	{
+		int i = 1;
+
+		Debug.Log ("num=" + main.NumComplete);
+		if (arrTrr [i].GetComponent<MeshFilter > ()) {
+			Debug.Log("test mesh="+arrTrr [i].GetComponent<MeshFilter >().mesh );
+		}
+		if (arrTrr [i].GetComponent<MeshRenderer > ()) {
+			Debug.Log ("test shm="+arrTrr [i].GetComponent<MeshRenderer > ().sharedMaterial);
+		}
+
+		if (arrTrr [i].GetComponent<MeshRenderer > ().sharedMaterial.GetTexture ("_MainTex")) {
+			Debug.Log("test tx="+arrTrr [i].GetComponent<MeshRenderer > ().sharedMaterial.GetTexture ("_MainTex") );
+		}
+
+		if (main.NumComplete < arrTrr.Length ) {
+			Debug.LogWarning ("wait");
+			return;
+		}
+		Debug.Log (GameObject.Find ("TRRMAG"));
+
+	} 
 	/// 
 	/// 
 
 	void meshcombine(GameObject _newmeshobj,GameObject[] arrTrr)
 	{
-		Debug.Log ("num=" + main.NumComplete);
-		if (main.NumComplete < arrTrr.Length ) {
+		Debug.Log ("num c+e=" + main.NumComplete+"+"+main.NumError );
+		//没加载完不许合成
+		if ((main.NumComplete < arrTrr.Length) && (main.NumComplete + main.NumError < 9)) {
 			Debug.LogWarning ("wait");
-			return;
+			if (EditorUtility.DisplayDialog ("wait",
+				    "loading is not complete", "Yes")) {
+				//Debug.Log ("uuuuuu");
+				return;
+			}
+		} else if (main.NumComplete + main.NumError >= 9) {
+			//全部加载完或错误
+			if (EditorUtility.DisplayDialog ("!",
+				"There is something wrong in loading data,do you want to continue?", "Yes","No")) {
+				Debug.Log ("go on");
+
+			}else{
+				return;
+			}
+		
 		}
+
+
 		Debug.Log (GameObject.Find ("TRRMAG"));
 		if (GameObject.Find ("TRRMAG")) {
 			Debug.Log ("exist");
@@ -75,14 +119,22 @@ public class MakeTerrainEditor : Editor { // extend the Editor class
 			Material[] _materials = new Material[arrTrr.Length ];
 			Texture2D[] _textures = new Texture2D[arrTrr.Length];
 			for (int i = 0; i < arrTrr.Length; i++) {
-				_materials [i] = arrTrr [i].GetComponent<MeshRenderer > ().sharedMaterial;
+				if (arrTrr [i].GetComponent<MeshRenderer > () && arrTrr [i].GetComponent<MeshFilter > ()) {
+					if (arrTrr [i].GetComponent<MeshRenderer > ().sharedMaterial.GetTexture ("_MainTex")) {
+						//当读图失败或不读图时，不管这块的材质
+						_materials [i] = arrTrr [i].GetComponent<MeshRenderer > ().sharedMaterial;
 
-				Texture2D tx = _materials[i].GetTexture("_MainTex") as Texture2D; 
-				Texture2D tx2D = new Texture2D(tx.width, tx.height, TextureFormat.ARGB32, false);  
-				var tmp = tx.GetPixels (0, 0, tx.width, tx.height);
-				tx2D.SetPixels(tmp);  
-				tx2D.Apply();  
-				_textures[i] = tx2D;  
+						Texture2D tx = _materials [i].GetTexture ("_MainTex") as Texture2D; 
+						Texture2D tx2D = new Texture2D (tx.width, tx.height, TextureFormat.ARGB32, false);  
+						var tmp = tx.GetPixels (0, 0, tx.width, tx.height);
+						tx2D.SetPixels (tmp);  
+						tx2D.Apply ();  
+						_textures [i] = tx2D;  
+					}
+				
+				} else {
+					_textures [i] = new Texture2D (10, 10, TextureFormat.ARGB32, false);//
+				}
 			}
 			Debug.Log ("mat="+_materials [0]);
 
@@ -121,8 +173,9 @@ public class MakeTerrainEditor : Editor { // extend the Editor class
 			Debug.Log("_texture="+_texture );
 
 
-			Material materialNew = new Material(_materials[0].shader);  
-			materialNew.CopyPropertiesFromMaterial(_materials[0]);  
+			Material materialNew = new Material(Shader.Find("Standard"));//(_materials[0].shader);  
+			//materialNew.CopyPropertiesFromMaterial(_materials[0]);  
+			//这样好像选择不读图的时候就不会出错了
 
 			materialNew.SetTexture("_MainTex", _texture); 
 			AssetDatabase.CreateAsset (materialNew,filepathMaterial +"/combineMat"+savematDate+".mat");
@@ -130,25 +183,31 @@ public class MakeTerrainEditor : Editor { // extend the Editor class
 			_newmeshobj.GetComponent<MeshRenderer>().sharedMaterial = materialNew; 
 			CombineInstance[] combine = new CombineInstance[arrTrr .Length];     
 			for (int i = 0; i < arrTrr.Length; i++) {
+				
+					Rect rect = _rects [i];  
+				Mesh tmpMesh=new Mesh();
+				if (arrTrr [i].GetComponent<MeshFilter > ()) {
+					tmpMesh = arrTrr [i].GetComponent<MeshFilter > ().mesh;
 
-				Rect rect = _rects[i];  
-				Mesh tmpMesh = arrTrr [i].GetComponent<MeshFilter >().mesh ;
-
-				Vector2[] uvs = new Vector2[tmpMesh.uv.Length];  
-				//把网格的uv根据贴图的rect刷一遍  
-				for (int j = 0; j < uvs.Length; j++)  
-				{  
-					uvs[j].x = rect.x + tmpMesh.uv[j].x * rect.width;  
-					uvs[j].y = rect.y + tmpMesh.uv[j].y * rect.height;  
-				}  
-				tmpMesh.uv = uvs;  
-
-				combine [i].mesh = tmpMesh;
-				combine[i].transform = arrTrr[i].transform.localToWorldMatrix;  
-				arrTrr[i].gameObject.SetActive(false);  
+					Vector2[] uvs = new Vector2[tmpMesh.uv.Length];  
+					//把网格的uv根据贴图的rect刷一遍  
+					for (int j = 0; j < uvs.Length; j++) {  
+						uvs [j].x = rect.x + tmpMesh.uv [j].x * rect.width;  
+						uvs [j].y = rect.y + tmpMesh.uv [j].y * rect.height;  
+					}  
+					tmpMesh.uv = uvs; 
+				} //else {
+//					for (int j = 0; j < uvs.Length; j++) {  
+//						uvs [j].x = rect.x + tmpMesh.uv [j].x * rect.width;  
+//						uvs [j].y = rect.y + tmpMesh.uv [j].y * rect.height;  
+//					} 
+//					tmpMesh.uv = uvs;  
+			//	}
+					combine [i].mesh = tmpMesh;
+					combine [i].transform = arrTrr [i].transform.localToWorldMatrix;  
+					arrTrr [i].gameObject.SetActive (false);  
+				
 			}
-			//Debug.Log ("combine--"+combine[0]);
-
 
 			//合并Mesh. 第二个false参数, 表示并不合并为一个网格, 而是一个子网格列表  
 			_newmeshobj.GetComponent<MeshFilter>().mesh.CombineMeshes(combine, true);  
@@ -187,16 +246,13 @@ public class MakeTerrainEditor : Editor { // extend the Editor class
 			//////////////////////////////保存一个mesh
 			string savepathMesh="Assets/Resources/"+main.savefiledate;
 			savepathMesh+="/saveMesh"+DateTime.Now.ToString("HH-mm")+".asset";
-			//string baseResultFolder="Assets/savemesh";
-			//string  dateStr = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
-			//baseResultFolder += dateStr;
-//			if (! Directory.Exists(baseResultFolder)) 
-//			{
-//				Directory.CreateDirectory(baseResultFolder);
-//			}
-			//string strfilename=baseResultFolder+"/aaa" +".asset";
-			Mesh m1 = _newmeshobj . GetComponent<MeshFilter>().mesh;  
-			AssetDatabase.CreateAsset(m1, savepathMesh);  
+
+			if (_newmeshobj.GetComponent<MeshFilter> ().mesh.name!="CombinedMesh") {
+				Debug.Log ("the mesh is saved");
+			} else {
+				Mesh m1 = _newmeshobj.GetComponent<MeshFilter> ().mesh;  
+				AssetDatabase.CreateAsset (m1, savepathMesh);  
+			}
 			//////////////////////////////////end 保存一个mesh
 		}else{
 			Debug.LogWarning ("obj not found,run first");

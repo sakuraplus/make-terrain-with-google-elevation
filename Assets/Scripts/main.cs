@@ -26,15 +26,15 @@ public class main : MonoBehaviour {
 
 
 
-	//[SerializeField,HeaderAttribute ("Default material of each block")]
-	[HideInInspector]
+	[SerializeField,HeaderAttribute ("Default material of each block")]
+	//[HideInInspector]
 	public Material matTrr;	
 	//地形预设材质
 
-	[SerializeField,Header ("ELE KEY ")]
+	[SerializeField,Header ("API KEY of google elevation service")]
 	[Tooltip("Get a ELE KEY at developers.google.com/maps/documentation/elevation")]
 	string  googleELEAPIKey="";
-	[SerializeField,Header ("Get a STM KEY at ")]
+	[SerializeField,Header ("API KEY of google staticmap service")]
 	string  googleSTMAPIKey="";
 	[Space(20)]
 	public static string ELEAPIkey;
@@ -64,8 +64,10 @@ public class main : MonoBehaviour {
 
 	public static  string savefiledate;
 	public static  int NumComplete;
+	public static  int NumError;
     void Start () {
 		NumComplete = 0;
+		NumError = 0;
 		StartCoroutine (findLicense ());
 
     }
@@ -248,7 +250,7 @@ public class main : MonoBehaviour {
 		size.x =size.z * ttt * Mathf.Abs (steplngall / steplatall);//根据当前纬度下跨越的纬度与跨越的经度距离的比例关系，求lng方向的mesh尺寸
 
 		float distancelat = 2 * Mathf.PI * earthR * steplatall / 360;//计算纬度方向实际距离
-		float _scale = size.z / distancelat;//单位实际距离对应的mesh大小
+		float _scale =3* size.z / distancelat;//单位实际距离对应的mesh大小
 	
 		size.y=_scale*heightScale ;
 		print("distancelat="+distancelat+"  _add="+_scale+"  sizey="+size.y);
