@@ -41,6 +41,9 @@ public class MakeTerrainEditor : Editor { // extend the Editor class
 		{
 			savemesh   (_main._newmeshobj);
 		}
+		if (GUILayout.Button ("save as Terrain")) {
+			MeshToTerrain.OpenWindow ();
+		}
 	
 		//测试用
 		GUILayout.Label ("test" );
@@ -99,7 +102,7 @@ public class MakeTerrainEditor : Editor { // extend the Editor class
 				//Debug.Log ("uuuuuu");
 				return;
 			}
-		} else if (main.NumComplete + main.NumError >= 9) {
+		} else if ((main.NumComplete + main.NumError >= 9)&& main.NumError >0) {
 			//全部加载完或错误
 			if (EditorUtility.DisplayDialog ("!",
 				"There is something wrong in loading data,do you want to continue?", "Yes","No")) {
@@ -213,6 +216,10 @@ public class MakeTerrainEditor : Editor { // extend the Editor class
 			_newmeshobj.GetComponent<MeshFilter>().mesh.CombineMeshes(combine, true);  
 			_newmeshobj.gameObject.SetActive(true);    
 
+			var oldgo = GameObject.Find ("TRRMAG");
+			if(oldgo!=null){
+				DestroyImmediate (oldgo);
+			}
 
 		} else {
 			Debug.LogWarning ("run first！");

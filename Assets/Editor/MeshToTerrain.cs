@@ -1,19 +1,3 @@
-/*
-http://www.cgsoso.com/forum-211-1.html
-
-CG搜搜 Unity3d 每日Unity3d插件免费更新 更有VIP资源！
-
-CGSOSO 主打游戏开发，影视设计等CG资源素材。
-
-插件如若商用，请务必官网购买！
-
-daily assets update for try.
-
-U should buy the asset from home store if u use it in your project!
-*/
-
-/*   http://www.infinity-code.com   */
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,11 +7,8 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 
 [Serializable]
-// ReSharper disable UnusedMember.Global
 public class MeshToTerrain : EditorWindow
-// ReSharper restore UnusedMember.Global
 {
-    public const string version = "1.6.0.1";
 
     public static MeshToTerrainPhase phase;
 
@@ -47,7 +28,6 @@ public class MeshToTerrain : EditorWindow
     private string resultFolder;
     private List<MeshCollider> tempColliders;
     private Mesh mesh;
-    private List<Texture2D> rtpTextures;
 
     private void AddTempCollider(GameObject go, bool recursive)
     {
@@ -69,52 +49,12 @@ public class MeshToTerrain : EditorWindow
 
     private bool CheckBounds(bool isFirstTime = true)
     {
-        if (prefs.terrainType == MeshToTerrainSelectTerrainType.newTerrains &&
-            prefs.boundsType == MeshToTerrainBounds.fromGameobject)
-        {
-            if (!CheckBoundsFromGameObject()) return false;
-        }
-        else
-        {
-            FindBounds();
-        }
 
-        /*if ((minBounds == Vector3.zero && maxBounds == Vector3.zero) || (maxBounds- minBounds).magnitude < 10)
-        {
-            if (isFirstTime && prefs.meshes.Count == 1)
-            {
-                bool result = EditorUtility.DisplayDialog("Warning", "Can not define the boundaries of the models.\nScale up GameObject in 1000 times?", "Scale up", "Cancel");
-                if (result)
-                {
-                    prefs.meshes[0].transform.localScale *= 1000;
-                    return CheckBounds(false);
-                }
-                return false;
-            }
+        FindBounds();
 
-            DisplayDialog("Can not define the boundaries of the models.\nTry manual scale up GameObjects in 1000 times.");
-            return false;
-        }*/
         return true;
     }
-
-    private bool CheckBoundsFromGameObject()
-    {
-        if (prefs.boundsGameObject == null)
-        {
-            DisplayDialog("Boundaries GameObject are not set.\nSelect a GameObject in the scene, which will be the boundaries to generated Terrains.");
-            return false;
-        }
-        Renderer r = prefs.boundsGameObject.GetComponent<Renderer>();
-        if (r == null)
-        {
-            DisplayDialog("Boundaries GameObject does not contain the Renderer component.\nSelect another GameObject.");
-            return false;
-        }
-        minBounds = r.bounds.min;
-        maxBounds = r.bounds.max;
-        return true;
-    }
+		
 
     private bool CheckOnlySceneObjects()
     {
@@ -145,59 +85,42 @@ public class MeshToTerrain : EditorWindow
 
     private bool CheckValues()
     {
-        if (prefs.meshFindType == MeshToTerrainFindType.gameObjects)
+
+        if (prefs.meshes.Count == 0)
         {
-            if (prefs.meshes.Count == 0)
-            {
-                DisplayDialog("No meshes added.");
-                return false;
-            }
-
-            if (!CheckOnlySceneObjects()) return false;
-
-            prefs.meshLayer = FindFreeLayer();
-            if (prefs.meshLayer == -1)
-            {
-                prefs.meshLayer = 31;
-                DisplayDialog("Can not find the free layer.");
-                return false;
-            }
+            DisplayDialog("No meshes added.");
+            return false;
         }
-        else if (prefs.meshFindType == MeshToTerrainFindType.layers)
+
+        if (!CheckOnlySceneObjects()) return false;
+
+        prefs.meshLayer = FindFreeLayer();
+        if (prefs.meshLayer == -1)
         {
-            if (prefs.meshLayer == 0)
-            {
-                DisplayDialog("Cannot use dafault layer.\nPlace the models for conversion to another layer.");
-                return false;
-            }
-
-            prefs.meshes = FindGameObjectsWithLayer(prefs.meshLayer).ToList();
+            prefs.meshLayer = 31;
+            DisplayDialog("Can not find the free layer.");
+            return false;
         }
+
+
 
         if (!CheckBounds()) return false;
 
-        if (prefs.yRange != MeshToTerrainYRange.minimalRange)
-        {
-            float yRange = maxBounds.y - minBounds.y;
-            float halfRange = yRange / 2;
-            float center = halfRange + minBounds.y;
-            float scale = yRange / ((prefs.yRange == MeshToTerrainYRange.fixedValue)
-                ? prefs.yRangeValue
-                : Mathf.Max(maxBounds.x - minBounds.x, maxBounds.z - minBounds.z));
 
-            if (scale < 1)
-            {
-                maxBounds.y = center + halfRange / scale;
-                minBounds.y = center - halfRange / scale;
-            }
+        float yRange = maxBounds.y - minBounds.y;
+        float halfRange = yRange / 2;
+        float center = halfRange + minBounds.y;
+		float scale = yRange / Mathf.Max(maxBounds.x - minBounds.x, maxBounds.z - minBounds.z);
+
+        if (scale < 1)
+        {
+            maxBounds.y = center + halfRange / scale;
+            minBounds.y = center - halfRange / scale;
         }
 
-        if (prefs.terrainType == MeshToTerrainSelectTerrainType.newTerrains) CreateTerrainContainer();
-        else if (prefs.terrains.Count == 0)
-        {
-            DisplayDialog("No terrains added.");
-            return false;
-        }
+
+        CreateTerrainContainer();
+
         return true;
     }
 
@@ -331,51 +254,13 @@ public class MeshToTerrain : EditorWindow
         return -1;
     }
 
-    private IEnumerable<GameObject> FindGameObjectsWithLayer(int layer)
-    {
-        return ((MeshFilter[])FindObjectsOfType(typeof(MeshFilter))).Select(m => m.gameObject).Where(go => go.layer == layer);
-    }
-
     private void Finish()
     {
-#if RTP
-        if (prefs.generateTextures)
-        {
-            ReliefTerrain reliefTerrain = prefs.terrains[0].GetComponent<ReliefTerrain>();
-            ReliefTerrainGlobalSettingsHolder settingsHolder = reliefTerrain.globalSettingsHolder;
-
-            settingsHolder.numLayers = 4;
-            settingsHolder.splats = new Texture2D[4];
-            settingsHolder.Bumps = new Texture2D[4];
-            settingsHolder.Heights = new Texture2D[4];
-
-            for (int i = 0; i < 4; i++)
-            {
-                settingsHolder.splats[i] = rtpTextures[i * 3];
-                settingsHolder.Heights[i] = rtpTextures[i * 3 + 1];
-                settingsHolder.Bumps[i] = rtpTextures[i * 3 + 2];
-            }
-
-            settingsHolder.GlobalColorMapBlendValues = new Vector3(1, 1, 1);
-            settingsHolder._GlobalColorMapNearMIP = 1;
-            settingsHolder.GlobalColorMapSaturation = 1;
-            settingsHolder.GlobalColorMapSaturationFar = 1;
-            settingsHolder.GlobalColorMapBrightness = 1;
-            settingsHolder.GlobalColorMapBrightnessFar = 1;
-            settingsHolder.useTerrainMaterial = true;
-
-            foreach (Terrain item in prefs.terrains) item.GetComponent<ReliefTerrain>().RefreshTextures();
-
-            settingsHolder.Refresh();
-        }
-#endif
-
         RemoveTempColliders();
-        if (prefs.meshFindType == MeshToTerrainFindType.gameObjects)
-            foreach (MeshToTerrainObject m in terrainObjects) m.gameobject.layer = m.layer;
 
-        if (prefs.terrainType == MeshToTerrainSelectTerrainType.newTerrains) EditorGUIUtility.PingObject(container);
-        else foreach (Terrain t in prefs.terrains) EditorGUIUtility.PingObject(t.gameObject);
+        foreach (MeshToTerrainObject m in terrainObjects) m.gameobject.layer = m.layer;
+
+        EditorGUIUtility.PingObject(container);
 
         phase = MeshToTerrainPhase.idle;
     }
@@ -557,29 +442,6 @@ public class MeshToTerrain : EditorWindow
         return val;
     }
 
-#if RTP
-    private void LoadRTPTextures()
-    {
-        if (rtpTextures != null && rtpTextures.Count == 12) return;
-
-        rtpTextures = new List<Texture2D>
-        {
-            (Texture2D) FindAndLoad("Dirt.png", typeof (Texture2D)),
-            (Texture2D) FindAndLoad("Dirt Height.png", typeof (Texture2D)),
-            (Texture2D) FindAndLoad("Dirt Normal.png", typeof (Texture2D)),
-            (Texture2D) FindAndLoad("Grass.png", typeof (Texture2D)),
-            (Texture2D) FindAndLoad("Grass Height.png", typeof (Texture2D)),
-            (Texture2D) FindAndLoad("Grass Normal.png", typeof (Texture2D)),
-            (Texture2D) FindAndLoad("GrassRock.png", typeof (Texture2D)),
-            (Texture2D) FindAndLoad("GrassRock Height.png", typeof (Texture2D)),
-            (Texture2D) FindAndLoad("GrassRock Normal.png", typeof (Texture2D)),
-            (Texture2D) FindAndLoad("Cliff.png", typeof (Texture2D)),
-            (Texture2D) FindAndLoad("Cliff Height.png", typeof (Texture2D)),
-            (Texture2D) FindAndLoad("Cliff Normal.png", typeof (Texture2D))
-        };
-    }
-#endif
-
     private void OnConvertGUI()
     {
         string phaseTitle = "";
@@ -607,38 +469,21 @@ public class MeshToTerrain : EditorWindow
 
         EditorGUILayout.EndVertical();
     }
+		
 
 // ReSharper disable once UnusedMember.Local
-    private void OnDestroy()
-    {
-        if (prefs != null) prefs.Save();
-    }
-
-// ReSharper disable once UnusedMember.Local
-    private void OnDisable()
-    {
-        if (prefs != null) prefs.Save();
-    }
-
-// ReSharper disable once UnusedMember.Local
-    private void OnEnable()
-    {
-        prefs = new MeshToTerrainPrefs();
-        Repaint();
-    }
-
-// ReSharper disable once UnusedMember.Local
-    private void OnGUI()
+	public void OnGUI()
     {
         if (phase == MeshToTerrainPhase.idle) prefs.OnGUI();
         else OnConvertGUI();
     }
 
-    [MenuItem("Window/Infinity Code/Mesh to Terrain/Mesh to Terrain", false, 0)]
+
+//    [MenuItem("Window/Infinity Code/Mesh to Terrain/Mesh to Terrain", false, 0)]
 // ReSharper disable once UnusedMember.Local
-    private static void OpenWindow()
+	public static void OpenWindow()
     {
-        GetWindow<MeshToTerrain>(false, "Mesh to Terrain");
+		GetWindow<MeshToTerrain>(true, "Mesh to Terrain");
     }
 
     private void Prepare()
@@ -661,24 +506,17 @@ public class MeshToTerrain : EditorWindow
 
         PrepareMeshes(terrainObjects);
 
-        phase = prefs.terrainType == MeshToTerrainSelectTerrainType.newTerrains ? MeshToTerrainPhase.createTerrains : MeshToTerrainPhase.generateHeightmaps;
+		phase = MeshToTerrainPhase.createTerrains;
     }
 
     private void PrepareMeshes(List<MeshToTerrainObject> objs)
     {
-        if (prefs.meshFindType == MeshToTerrainFindType.gameObjects)
+        IEnumerable<GameObject> gos = prefs.meshes.SelectMany(m => m.GetComponentsInChildren<MeshFilter>()).Select(mf => mf.gameObject);
+        foreach (GameObject go in gos)
         {
-            IEnumerable<GameObject> gos = prefs.meshes.SelectMany(m => m.GetComponentsInChildren<MeshFilter>()).Select(mf => mf.gameObject);
-            foreach (GameObject go in gos)
-            {
-                objs.Add(new MeshToTerrainObject(go));
-                AddTempCollider(go, false);
-                go.layer = prefs.meshLayer;
-            }
-        }
-        else if (prefs.meshFindType == MeshToTerrainFindType.layers)
-        {
-            foreach (GameObject go in FindGameObjectsWithLayer(prefs.meshLayer)) AddTempCollider(go, false);
+            objs.Add(new MeshToTerrainObject(go));
+            AddTempCollider(go, false);
+            go.layer = prefs.meshLayer;
         }
     }
 
@@ -787,12 +625,7 @@ public class MeshToTerrain : EditorWindow
         Vector3 vScale = t.terrainData.heightmapScale;
         Vector3 beginPoint = t.transform.position;
         Vector3 raycastDirection = -Vector3.up;
-        if (prefs.direction == MeshToTerrainDirection.normal) beginPoint.y += raycastDistance;
-        else
-        {
-            beginPoint.y = maxBounds.y - raycastDistance;
-            raycastDirection = Vector3.up;
-        }
+        beginPoint.y += raycastDistance;
 
         if (heightmap == null)
         {
@@ -810,8 +643,7 @@ public class MeshToTerrain : EditorWindow
                 RaycastHit hit;
                 if (Physics.Raycast(curPoint, raycastDirection, out hit, raycastDistance, mLayer))
                 {
-                    if (prefs.direction == MeshToTerrainDirection.normal) heightmap[ty, tx] = (raycastDistance - hit.distance) / vScale.y;
-                    else heightmap[ty, tx] = hit.distance / vScale.y;
+                    heightmap[ty, tx] = (raycastDistance - hit.distance) / vScale.y;
                 }
                 else heightmap[ty, tx] = 0;
             }
@@ -851,12 +683,7 @@ public class MeshToTerrain : EditorWindow
         Vector3 vScale = t.terrainData.size;
         Vector3 beginPoint = t.transform.position;
         Vector3 raycastDirection = -Vector3.up;
-        if (prefs.direction == MeshToTerrainDirection.normal) beginPoint.y += raycastDistance;
-        else
-        {
-            beginPoint.y = maxBounds.y - raycastDistance;
-            raycastDirection = Vector3.up;
-        }
+        beginPoint.y += raycastDistance;
 
         float tsx = prefs.textureWidth + 1;
         float tsy = prefs.textureHeight + 1;
@@ -899,23 +726,8 @@ public class MeshToTerrain : EditorWindow
 
         lastX = 0;
 
-#if !RTP
         t.terrainData.splatPrototypes = GetSplatPrototype(t);
-#else
-        LoadRTPTextures();
-        SplatPrototype[] sps = new SplatPrototype[4];
 
-        for (int i = 0; i < 4; i++)
-        {
-            sps[i] = new SplatPrototype { texture = rtpTextures[i * 3] };
-        }
-
-        t.terrainData.splatPrototypes = sps;
-
-        ReliefTerrain reliefTerrain = t.gameObject.AddComponent<ReliefTerrain>() ?? t.gameObject.AddComponent<ReliefTerrain>();
-        reliefTerrain.InitArrays();
-        reliefTerrain.ColorGlobal = GetTexture(t);
-#endif
 
         colors = null;
 #if UNITY_4_3 || UNITY_4_5 || UNITY_4_6
