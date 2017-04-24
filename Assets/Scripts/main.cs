@@ -174,15 +174,15 @@ public class main : MonoBehaviour {
 		Trimlatlng ();//处理输入的经纬度信息，保证为西北，东南两点
 
 		//每个分块纬度差
-		float	steplat=(endlat-lat)/3; //(float)Math.Floor(steplat*10)/10;
+		float	steplat=(endlat-lat)/Pieces.y; //(float)Math.Floor(steplat*10)/10;
 		//每个分块经度差
 		//经度差绝对值>180时，取endlng+360计算step.计算后经度超过180的部分在索取数据时处理
 		float	steplng;
 		if (Math.Abs (endlng - lng) >= 180) {
 			//如果=180则认为lat，lng为西北点
-			steplng = (360 + endlng - lng) / 3;
+			steplng = (360 + endlng - lng) / Pieces.x;
 		} else {
-			steplng = (endlng - lng) / 3;
+			steplng = (endlng - lng) / Pieces.x;
 		}
 
 		size = calcMeshSize (SizeOfPiece);//以纬度方向size y计算经度方向距离x
@@ -288,7 +288,7 @@ public class main : MonoBehaviour {
 		size.x =size.z * ttt * Mathf.Abs (steplngall / steplatall);//根据当前纬度下跨越的纬度与跨越的经度距离的比例关系，求lng方向的mesh尺寸
 
 		float distancelat = 2 * Mathf.PI * earthR * steplatall / 360;//计算纬度方向实际距离
-		float _scale =3* size.z / distancelat;//单位实际距离对应的mesh大小
+		float _scale =Pieces.y* size.z / distancelat;//单位实际距离对应的mesh大小
 	
 		size.y=_scale*heightScale ;
 		print("distancelat="+distancelat+"  _add="+_scale+"  sizey="+size.y);
