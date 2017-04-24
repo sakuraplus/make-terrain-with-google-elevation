@@ -29,6 +29,7 @@ sysinfo.txt
 *.apk
 *.unitypackage
 /Assets/MTT_Results
+/Assets/MTT_Results*.*
 /Assets/downloadImg
 /Assets/ResultMesh
 /Assets/testTrr12.png.meta
@@ -59,4 +60,4 @@ ProjectSettings/ProjectVersion.txt
 /Assets/Resources.meta
 /docs/~$readme.doc
 Assets/save*
-/docs/~$readme.doc
+/docs/~$*.*

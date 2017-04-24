@@ -27,7 +27,7 @@ public class MapLocation{
 	
 public class drawJterrain : MonoBehaviour {
 	
-	GameObject Player ;
+//	GameObject Player ;
 
 	string  ipaddress = "https://maps.googleapis.com/maps/api/elevation/json?locations="; 
 	string ELEKey = main.ELEAPIkey;//google高度api key = "AIzaSyD04LHgbiErZTYJMfda2epkG0YeaQHVuEE";//需要自己注册！！
@@ -64,7 +64,7 @@ public class drawJterrain : MonoBehaviour {
 
 	string tempstr="";//打印测试数据用
 
-	private GameObject terrain;
+	//private GameObject terrain;
 
 	Texture2D mapTexture;
 
@@ -124,12 +124,12 @@ public class drawJterrain : MonoBehaviour {
 	{
  
 		segment = new Vector2(segmentX, segmentY);
-		if (terrain != null)
-		{
-			Destroy(terrain);
-		}
-		terrain = new GameObject();
-		terrain.name = Trrname;// 
+//		if (terrain != null)
+//		{
+//			Destroy(terrain);
+//		}
+//		terrain = new GameObject();
+//		terrain.name = Trrname;// 
 	}
   
 	//不加载高度数据，测试用
@@ -160,7 +160,7 @@ public class drawJterrain : MonoBehaviour {
 	   	if (indVertives >= vertives.Length)		  
 		{
 		   /////////////////
-			Debug.Log(Trrname + "Data complete!!!!!!!"+tempstr );
+			Debug.LogWarning (Trrname + "Data complete!!!!!!!"+tempstr );
             DrawMesh();
 			yield break;
 		}
@@ -178,7 +178,7 @@ public class drawJterrain : MonoBehaviour {
 		////////////////////////////
 		if (www_data.error != null)    
 		{    
-			Debug.Log("error :"+Trrname +"/"+indVertives +"-" + www_data.error );
+			Debug.LogWarning ("error :"+Trrname +"/"+indVertives +"-" + www_data.error+"--"+www_data.isDone  );
 
 			StrWwwData =  "error :" + www_data.error;  
 			main.NumError++;
@@ -302,7 +302,7 @@ public class drawJterrain : MonoBehaviour {
 		yield return www_data;  
 
 		if (www_data.error != null) {
-			Debug.LogWarning  (Trrname +"Load img error" + www_data.error);
+			Debug.LogWarning  (Trrname +"Load img error" + www_data.error+"--"+www_data.isDone );
 			main.NumError++;//出错时计数，用于确定是否所有块都完成工作
 		}else{
 			print (Trrname + "loaded img" );
@@ -340,7 +340,8 @@ public class drawJterrain : MonoBehaviour {
   //
 	private void DrawMesh()
 	{
-		Mesh mesh = terrain.AddComponent<MeshFilter>().mesh;
+		
+		Mesh mesh = gameObject .AddComponent<MeshFilter>().mesh;
 		//给mesh 赋值
         mesh.Clear();
 		mesh.vertices = vertives;//,pos);
@@ -361,7 +362,7 @@ public class drawJterrain : MonoBehaviour {
 
 	private void DrawTexture(){
 			
-		terrain.AddComponent<MeshRenderer>();
+		gameObject .AddComponent<MeshRenderer>();
 
 
 		if (diffuseMap == null)
@@ -372,7 +373,7 @@ public class drawJterrain : MonoBehaviour {
 			}
 
 		}
-		terrain.GetComponent<Renderer>().material = diffuseMap;
+		gameObject .GetComponent<Renderer>().material = diffuseMap;
 	}
 
 

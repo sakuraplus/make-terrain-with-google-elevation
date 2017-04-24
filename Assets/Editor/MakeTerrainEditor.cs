@@ -95,14 +95,14 @@ public class MakeTerrainEditor : Editor { // extend the Editor class
 	{
 		Debug.Log ("num c+e=" + main.NumComplete+"+"+main.NumError );
 		//没加载完不许合成
-		if ((main.NumComplete < arrTrr.Length) && (main.NumComplete + main.NumError < 9)) {
+		if ((main.NumComplete < arrTrr.Length) && (main.NumComplete + main.NumError < arrTrr.Length)) {
 			Debug.LogWarning ("wait");
 			if (EditorUtility.DisplayDialog ("wait",
 				    "loading is not complete", "Yes")) {
 				//Debug.Log ("uuuuuu");
 				return;
 			}
-		} else if ((main.NumComplete + main.NumError >= 9)&& main.NumError >0) {
+		} else if ((main.NumComplete + main.NumError >= arrTrr.Length)&& main.NumError >0) {
 			//全部加载完或错误
 			if (EditorUtility.DisplayDialog ("!",
 				"There is something wrong in loading data,do you want to continue?", "Yes","No")) {
