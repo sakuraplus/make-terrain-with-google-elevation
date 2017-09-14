@@ -1,0 +1,143 @@
+body{
+        margin:0 auto;}
+a{
+	color: rgb(204,255,255);
+	
+	}
+.menu0 {
+	font-size: 12px;
+	font-style: normal;
+	font-weight: bold;
+	color: #FFF;
+	text-decoration: underline;
+	background-color: #099;
+	border: 2px solid #9CC;
+	text-align: center;
+	background-image: url(imgs/title.jpg);
+	padding-top: 60px;
+}
+.imgfield {
+	font-size: 12px;
+	font-style: normal;
+	font-weight: bold;
+	color: #CCC;
+	text-decoration: none;
+	background-color: #333;
+	border: 2px solid #FFF;
+	text-align: center;
+	padding: 0px;
+}
+.divabout {
+	font-size: 16px;
+	font-style: normal;
+	font-weight: bold;
+	color: #FFF;
+	text-decoration: none;
+	background-color: #000;
+	border: 2px solid #9CC;
+	text-align: center;
+	padding-top: 5px;
+	padding-right: 20px;
+	padding-bottom: 5px;
+	padding-left: 20px;
+}
+.divdark {
+	font-size: 12px;
+	font-style: normal;
+	font-weight: bold;
+	color: #FFF;
+	text-decoration: none;
+	background-color: #000;
+	border: 2px solid #9CC;
+	text-align: left;
+	padding-top: 5px;
+	padding-right: 20px;
+	padding-bottom: 5px;
+	padding-left: 20px;
+}
+.divlight {
+	font-size: 12px;
+	font-style: normal;
+	font-weight: bold;
+	color: #CCC;
+	text-decoration: none;
+	background-color: #000;
+	border: 2px solid #9CC;
+	text-align: left;
+	padding-top: 5px;
+	padding-right: 20px;
+	padding-bottom: 5px;
+	padding-left: 20px;
+}
+.titleBtn {
+	font-size: 16px;
+	font-style: normal;
+	font-weight: bold;
+	color: #FFF;
+	text-decoration: underline;
+	background-color: #099;
+	border: 2px solid #9CC;
+	text-align: center;
+	width: 80px;
+}
+.menu1 {
+	font-size: 12px;
+	font-style: normal;
+	font-weight: bold;
+	color: #FFF;
+	text-decoration: underline;
+	background-color: rgba(0,0,0,0.5);
+	border: 2px solid #9CC;
+	text-align: center;
+}
+.left {
+	font-size: 16px;
+	font-style: normal;
+	font-weight: bold;
+	color: #FFF;
+	text-decoration: underline;
+	background-color: #099;
+	border: 2px solid #9CC;
+	text-align: center;
+	width: 400px;
+	float: left;
+}
+.left2 {
+	font-size: 16px;
+	font-style: normal;
+	font-weight: bold;
+	color: #FFF;
+	text-decoration: underline;
+	background-color: #099;
+	border: 2px solid #9CC;
+	text-align: center;
+	float: left;
+}
+.right {
+	font-size: 10px;
+	font-style: normal;
+	font-weight: bold;
+	color: #FFF;
+	text-decoration: underline;
+	background-color: #099;
+	border: 2px solid #9CC;
+	text-align: center;
+	float: left;
+	position: relative;
+	right: 0px;
+	bottom: auto;
+	width: 40%;
+	font-variant: normal;
+}
+.bd {
+	width: 600px;
+	text-align: center;
+	float: left;
+	margin: 0;
+}
+.rtm{
+	margin: auto;
+	text-align: center;
+	color: #FFF;
+	width: 800px;
+}
