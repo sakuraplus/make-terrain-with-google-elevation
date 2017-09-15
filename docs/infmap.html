@@ -15,9 +15,9 @@
    <table width="100%"  align="center">
   <tr align="right">
     <td width="40%" align="right"><a href="index.html">home</a></td>
-    <td width="20%"align="right"><a href="infmap.html">Infinite Map</a></td>
     <td width="20%"><a href="guide.html">guide</a></td>
-    <td width="20%"><a href="download.html">resources</a></td>
+      <td width="20%"align="right"><a href="infmap.html">Infinite Map</a></td>
+    <td width="20%"><a href="advuse.html">Advanced Using</a></td>
   </tr>
 </table>
 </div>
@@ -28,12 +28,46 @@
 
 <div class="divdark">
   <h1>Run Time Infinite Map</h1>
-  <p>Detect the position of the character and download the map texture  and elevation data automaticity while running the game.<br />
+  <table border="0">
+  <tr>
+    <td>
+     <p>Detect the position of the character and download the map texture  and elevation data automaticity while running the game.<br />
     Add some of the infinite map scripts to a game object in the scene,  fill the fields of setting and run the scene. It will load the pieces on the  edges when the character object is moving.<br />
-  <em><u>open the example scene <strong>infinite map </strong></u></em><u>and<strong><em> run </em></strong><em>to see how infinite  map works.</em></u></p><div class="imgfield">
+    <em><u>open the example scene <strong>infinite map </strong></u></em><u>and<strong><em> run </em></strong><em>to see how infinite  map works.</em></u></p>
+    </td>
+    <td>
+     <div class="imgfield">
     <img src="files/image090.png" alt="a" width="197" height="110" /><br />     
   </div>
-  xxx on going xxx
+    </td>
+  </tr>
+  </table>
+      <h2>Character and Ground setting</h2>
+To play with the infinite map, you need to add the infinite map script and a Gameobject as the character.
+
+<table border="0">
+  <tr>
+    <td>
+     <div class="imgfield">
+    <img src="files/image092.png" alt="a" width="311" height="211" /><br />     
+  </div>
+ 
+    </td>
+    <td><p>Drag the character Gameobject to the <strong><u>CharPos</u></strong> field, and select the  layer which the pieces of terrain in.<br />
+      The script detects which edge the character  is approaching to by check which piece of ground it is on. The Layer of Ground  field is the layer mask to avoid other objects which are not supposed to be  check.<br />
+      If you set a default layer when generate  terrain, the layer mask should be same as the default layer you set.</p>    </td>
+  </tr>
+</table>
+
+       <h2>Terrain Setting</h2>
+       <p>The setting of infinite map is as same as  setting them in editor window.<br />
+    The script <strong><em><u>SetTerrain</u></em></strong> is required,  and the other components can be deleted or disabled if they are not needed.</p>
+  <div class="imgfield">
+    <img src="files/guide_clip_image018.jpg" alt="a" width="700" height="657" /><br />     
+  </div>
+  <div class="imgfield">
+    <img src="files/guide_clip_image019.jpg" alt="a" width="700" height="541" /><br />     
+  </div>
 
 </div>
 </div>
