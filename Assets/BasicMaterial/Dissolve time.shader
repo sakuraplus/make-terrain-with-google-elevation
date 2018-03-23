@@ -106,20 +106,21 @@ Shader "test/C15/Dissolvetime" {
 				// v.normal*(_WaveHeight)* sin((_Time[1] * _WaveSpeed) + (v0.x * _WaveLength) + (v0.z * _WaveLength) + rand2(v0.xzz));// + (v0.x * _WaveLength) + (v0.z * _WaveLength) + rand2(v0.xzz));
 				float phase0_1 =0 ;// (_RandomHeight)*sin(cos(rand(v0.xzz) * _RandomHeight * cos(_Time[1] * _RandomSpeed * sin(rand(v0.xxz)))));
 
-
-				float addupX= _WaveLength*_SinTime.w;
-				float addupZ= _WaveLength*_CosTime.w;
+				float flyAmount= saturate(_BurnAmount - _FlyThreshold) * _FlyFactor;
+				float addupX= _WaveLength*_SinTime.w/100;
+				float addupZ= _WaveLength*_CosTime.w/100;
 				float addupRX= (_WaveLength)*sin(cos(rand(v0.xzz) * _RandomHeight * cos(_SinTime.y * _RandomSpeed * sin(rand(v0.xxz)))));
 				float addupRZ= (_WaveLength)*sin(cos(rand(v0.xzz) * _RandomHeight * cos(_CosTime.y * _RandomSpeed * sin(rand(v0.xxz)))));
-				v0.x+=addupX+addupRX;
-				v0.z+=addupZ+addupRZ;
-				
+//				v0.x+=flyAmount*(addupX+addupRX);
+//				v0.z+=flyAmount*(addupZ+addupRZ);
+				v0.x+=flyAmount*(addupX*addupRX);
+				v0.z+=flyAmount*(addupZ*addupRZ);				
 //				v0.x+=addupX;
 //				v0.z+=addupZ;
-				v0.y += phase0 + phase0_1;
+				//v0.y += phase0 + phase0_1;
 
 				v.vertex.xyz = v0;//mul((float3x3)_World2Object, v0);
-				v.vertex.xyz += v.normal * saturate(_BurnAmount - _FlyThreshold) * _FlyFactor;
+				v.vertex.xyz += v.normal * flyAmount;
 //						v.vertex.xyz += v.normal * saturate(_BurnAmount - _FlyThreshold) * _FlyFactor;
 				// v.vertex.xyz += v.normal * _BurnAmount * _FlyFactor; 
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
