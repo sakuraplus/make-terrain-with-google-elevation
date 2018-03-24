@@ -53,16 +53,12 @@ Shader "test/lightRun" {
 		v2f vert(appdata_img v) {
 			v2f o;
 			//o.pos = UnityObjectToClipPos(v.vertex);//mul(UNITY_MATRIX_MVP, v.vertex);
-			o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 
-//			_rot=fmod(_rot,360);
-//			_rot=radians(_rot);
-//			half2 dir=	(half2(sin(_rot),cos(_rot)));//normalize
-			o. uv = v.texcoord;
-//			for (int it = 0; it < _ShadowNum; it++) {
-//				o.uv[it]=uv +  0.005*half2(-1*it*dir.x, it*dir.y)*_OffsetSize;
-//			}		 
-					 
+			o.pos = mul(UNITY_MATRIX_MVP, v.vertex);			
+			half2 uuv = v.texcoord;
+			o.uv=uuv ;//+ _IconTex_TexelSize.xy * half2(0*dir.x, 0*dir.y)*_RSize;
+			o.uv-=_MainTex_ST.zw;
+			o.uv*=_MainTex_ST.xy;
 			return o;
 		}
 		
@@ -70,34 +66,20 @@ Shader "test/lightRun" {
 
 		
 		fixed4 frag(v2f i) : SV_Target {
-			fixed4 sum = tex2D(_MainTex, i.uv*_MainTex_ST-_MainTex_ST.zw).rgba;
+			fixed4 sum = tex2D(_MainTex, i.uv).rgba;
 			sum.rgb*=  _MainAddup;
 			
-			fixed4 mask=tex2D(_MainTex, i.uv*_MaskTex_ST-_MaskTex_ST.zw).rgba;
+//			fixed4 mask=tex2D(_MainTex, i.uv*_MaskTex_ST-_MaskTex_ST.zw).rgba;
+//			if(mask.r>0.5){
+//			sum.xyz+=_FirstColor;
+//			}
 			
 			
-			
-			fixed iconshadow=0;
-			for (int it =_ShadowNum-1; it >=0; it--) {
-				if(it>14){
-					it=14;
-				}
-				fixed shadowA = tex2D(_IconTex, i.uv[it]*_IconTex_ST-_IconTex_ST.zw).a ;
-				if(iconshadow<shadowA){
-					iconshadow=shadowA;
-				}
 
-			}
-			
-			if(iconshadow>0){
-	
-				float sr=lerp(1,1-_ShadowRange,iconshadow);
-				sum.rgb *=sr;
-			}
-			fixed4 icon = tex2D(_IconTex, i.uv[0]*_IconTex_ST.xy-_IconTex_ST.zw).rgba ;
+		//	fixed4 icon = tex2D(_IconTex, i.uv[0]*_IconTex_ST.xy-_IconTex_ST.zw).rgba ;
 
 
-			sum.xyz = lerp (sum.xyz, icon.xyz, icon.www);
+		//	sum.xyz = lerp (sum.xyz, icon.xyz, icon.www);
 			return sum;
 		}
 	
