@@ -4,13 +4,14 @@ Shader "test/lightRunBetween2Color" {
 		Properties {
 		_MainTex ("Main Texture", 2D) = "white" {}
 		
-		_FirstColor("First Color", Color) = (1, 0, 0, 1)
+		_FirstColor("First Color", Color) = (0, 0, 0, 1)
 		_EndColor("End Color", Color) = (1, 0, 0, 1)
 		_ColorSpeed("color speed", Float) = 1.0
-		_ColorNum("color num", Float) = 1.0
-				
-		_MainAddup ("Addup", Range(0,1)) = 1.0
+		_ColorNum("color num", Float) = 2.0
+
+		[Header(A group of things)] _MainAddup ("Addup", Range(0,1)) = 1.0
 		_MaskTex ("Mask", 2D) = "white" {}
+		[Enum(multiply ,0,add,1)] _blendmode("Blend", int) = 0
 	}
 	SubShader {
 		CGINCLUDE
@@ -33,6 +34,7 @@ Shader "test/lightRunBetween2Color" {
 		struct v2f {
 			float4 pos : SV_POSITION;
 			half2 uv: TEXCOORD0;
+			half2 uvColor: TEXCOORD1;
 		};
 		  
 		v2f vert(appdata_img v) {
@@ -47,7 +49,12 @@ Shader "test/lightRunBetween2Color" {
 //			o.uv[1]=uv ;//+ _MaskTex_TexelSize.xy * half2(0*dir.x, 0*dir.y)*_RSize;
 //			o.uv[1]-=_MaskTex_ST.zw;
 //			o.uv[1]*=_MaskTex_ST.xy;		 
- 
+ 			int indcolor;
+		//	indcolor=floor(_ColorNum*(sin(_Time.y * _ColorSpeed)+1 )/2);//sinÍù·µ
+			indcolor=floor(_ColorNum*frac(_Time.y * _ColorSpeed));//Ñ­»·
+//			indcolor=frac(_Time.y * _ColorSpeed)<0.5? 2*floor(_ColorNum*frac(_Time.y * _ColorSpeed)): 2*(floor(_ColorNum*frac(_Time.y * _ColorSpeed))-0.5);//Ñ­»·
+			o.uvColor.x=indcolor;
+			o.uvColor.y=0;
 			return o;
 		}
 		
@@ -60,9 +67,12 @@ Shader "test/lightRunBetween2Color" {
 			
 			fixed4 lightcolorStep=(_FirstColor-_EndColor)/_ColorNum;//
 			
-			int indcolor=floor(_ColorNum*(sin(_Time.y * _ColorSpeed)+1 )/2);
-
+			int indcolor;
+		//	indcolor=floor(_ColorNum*(sin(_Time.y * _ColorSpeed)+1 )/2);//sinÍù·µ
+			//indcolor=floor(_ColorNum*frac(_Time.y * _ColorSpeed));//Ñ­»·
+			indcolor=frac(_Time.y * _ColorSpeed)<0.5? 2*floor(_ColorNum*frac(_Time.y * _ColorSpeed)):2*(floor(_ColorNum*frac(_Time.y * _ColorSpeed))-0.5);//Ñ­»·
 			fixed4 lightcolor	=_EndColor+lightcolorStep*indcolor;
+//			fixed4 lightcolor	=_EndColor+lightcolorStep*i.uvColor.x;
 				fixed4 mask = tex2D(_MaskTex, i.uv).rgba;
 				if(mask.r>0){
 					sum.rgb = lerp (sum.rgb, lightcolor.xyz, mask.rrr);
