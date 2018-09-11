@@ -35,60 +35,62 @@
 
 <div class="divabout">
         <img src="files/comingsoon.jpg" width="720"> <br>
-        <strong>Version 2.1.1 now available!</strong><br>
+        <strong>Version 2.2 now available!</strong><br>
 		 <strong>Lite version available!</strong>
 </div>
 
 <div class="divabout">
-         Real terrain maker is an easy tool for  creating terrain with the real geographic data. <br>
-          Specifies the geographic coordinates, and  make a terrain of anywhere on the earth in a few clicks. <br>
-          This plug-in runs depending on the Google/Bing  map service, which requires Elevations API and Static map API keys. <br>
+
+Real terrain maker is an easy tool for creating terrain with the real geographic data. <br />
+Specifies the geographic coordinates, and make a terrain of anywhere on the earth in a few clicks. <br />
+This plug-in runs depending on the Google/Bing/mapbox map service, which requires Elevations API and Static map API keys. <br />
+
+
+
 </div>
 
 <div class="divdark">
  <font size="15"><B>Features:</B></font>
  <hr>
 
+ <h3>◆Real Elevation data: </h3>
+   Using the elevation data of Google map, Bing map, and Mapbox, over 30 meters in most of the Earth areas. When you meet problems such as lack of data in a certain area, try another data source if one is not so satisfactory.<br />
 
+ <h3>◆Easy setting:</h3>
+   <p>To make a terrain faster or in high quality, simulate the real world or make an extravagant land. All setting can be made in a few clicks. Your keys and settings will be saved, no need to remember the location you generated last night.<br />
+     
+ <h3>◆Save in many types: </h3>
+   
+   The data downloaded can be saved in mesh, terrain, and prefab. The material is created automaticity. You can share the terrain you made with others without a hitch. With a combine and save tool, You can combine and save the generated mesh to prefab and unity terrain at any time.<br />
 
+ <h3>◆Basic Materials for Terrain Provided: </h3>
+     Several materials such as contour, grid, gradient and multiple texture height shader. It's possible to add some snow at the top of mountains and lava in the valley.<br />
 
+ <h3>◆ Height Map: </h3>
+     A heightmap file will be saved after the terrain generated. You can generate a new terrain with the premade height map at any time.<br />
+ 
+ <h3>◆Style Setting: </h3>
+     You can generate a terrain of low-poly style and set a default material before generating them. You can also set the default layer for the use of Infinite Map.<br />
 
+ <h3>◆ Map Style: </h3>
+     Besides satellite, many other styles of terrain texture are supported. It is convenient for making a 3D map. Image saved in a folder for each time the generate starts.<br />
 
+ <h3>◆ Preset template: </h3>
+     Include some common options for fast data preview or high details terrain creating. <br />
 
+ <h3>◆ Random Map: </h3>
+     One selectable option to generate a random map is provided. It can be used to save time when doing tests or just make an infinite random terrain in a game.<br />
 
+ <h3>◆Run Time Infinite Map: </h3>
+     Download the map texture and elevation data automaticity while running the game. The adjacent tiles will be generated while the character moving.<br />
 
- <h3>◆Diagnosis Tool:</h3>
-Check the network condition and API key state. If you are not sure about why RTM work correctly, try the Diagnosis tool to find out. <br>
- <h3>◆Smooth style:</h3>
-Make a smooth terrain with a smaller sample. <br>
- <h3>◆Height Map:</h3>
-After generating a piece of terrain, the heightmap will be saved in the texture directory. Use the Generate From Height Map to rebuild a mesh with heightmap. <br> 
- <h3>◆Real  Elevation data:</h3>
-Using the elevation data of  Google map, over 30 meters in most of the Earth areas.<br> 
- <h3>◆Easy  setting:</h3>
-To make a terrain faster or  in high quality, simulate the real world or make an extravagant land. All  setting can be made in a few clicks. <br>
- <h3>◆Map Types:</h3>
-Besides satellite, three more types of terrain texture supported. It is convenient for making a 3D map.<br>
-   <h3>◆Adjustments saving:</h3>
-Can save keys and other  settings for the other time. <br>
- <h3>◆Preset  template:</h3>
-Include some common options  for fast data preview or high details terrain creating. <br>
+ <h3>◆ Diagnosis Tool: </h3>
+     Check the network condition and API key state. If you are not sure about why RTM work incorrectly, try the Diagnosis tool to find out.<br />
 
- <h3>◆Two Data Source Supported:</h3>
-You can use the Google/Bing map data to generate a terrain. Try another datasource if one is not so satisfactory.<br>
- <h3>◆Random  Map:</h3>
-One selectable option to generate a random map is provided.  It can be used to save time when doing test or just make an infinite random  terrain in a game.<br>
- <h3>◆Run Time Infinite Map:</h3>
-Download the map texture  and elevation data automaticity while running the game.<br>
- <h3>◆Style  Setting:</h3>
-You can generate a terrain  of low-poly style and set a default material before generating them. You can  also set the default layer for the use of infinite map.<br>
- <h3>◆Combine  and Save:</h3>
-You can combine and save  the generated mesh to prefab and terrain at any time.<br>
- <h3>◆Basic  Materials for Terrain Provided:</h3>
-Several materials such as  contour ,grid , gradient and multiple texture height shader. It's possible to add some snow at the top of mountains and lava in  the valley<br>
- <br> 
+ <h3>◆ Smooth style: </h3>
+     Make a smooth terrain with a smaller sample.<br />
 
-
+  
 
 
 
@@ -97,19 +99,28 @@ Several materials such as  contour ,grid , gradient and multiple texture height 
 <div class="divlight">
  <h2>Improvement</h2>
  <p> v2.0:<br>
-	 <p>upgrade the autozoom function ,and support bigger texture download.<br>
+ <p>upgrade the autozoom function ,and support bigger texture download.<br>
    Change the sampling method of geographic coordinates while generating  terrain. </p>
 
-	<p> v2.1:<br>
+ <p> v2.1:<br>
  <p>Smooth terrain with small sample.<br>
    Diagnosis tool and height map importer. </p>
    
-  <p> v2.1.1<br>
-<p>Improve the Smooth terrain for infinite map. <br>
-More parameters to generate a random map.<br>
-Some bugs of saving mesh as unity terrain were fixed.</p>
+ <p> v2.1.1<br>
+ <p>Improve the Smooth terrain for infinite map. <br>
+ More parameters to generate a random map.<br>
+ Some bugs of saving mesh as unity terrain were fixed.</p>
 
- <p><strong>To free users, Google does  limit the number of elevation samples and limit the times of requirements in  one day. Try to work within this limitation or upgrade the API key.</strong></p>
+ <p>v2.2<br />
+ <p>Datasource of mapbox supported.<br >
+ Bugs fixed.<br >
+ Interface upgrade.</p>
+
+<strong>To free users of map API, the number of elevation samples and limit the times of requirements in one day. Try to work within this limitation or upgrade the API key.<br>
+Google has updated its rule of API Usage and Billing, please check your Google account for more information.</strong>
+
+
+
 </div>
 
 

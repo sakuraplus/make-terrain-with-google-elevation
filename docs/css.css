@@ -55,6 +55,27 @@ a{
 	text-align: center;
 	padding: 0px;
 }
+.imgfield_flex {
+	font-size: 12px;
+	font-style: normal;
+	font-weight: bold;
+	color: #CCC;
+	text-decoration: none;
+	background-color: #333;
+	border: 2px solid #FFF;	
+	padding: 0px;
+}
+.imgfield_noborder {
+	font-size: 12px;
+	font-style: normal;
+	font-weight: bold;
+	color: #CCC;
+	text-decoration: none;
+	background-color: #202020;
+	border: 2px solid #202020;
+	padding: 2px;
+	text-align: center;
+}
 .divabout {
 	font-size: 16px;
 	font-style: normal;
@@ -76,12 +97,23 @@ a{
 	color: #FFF;
 	text-decoration: none;
 	background-color: #000;
-	border: 2px solid #9CC;
 	text-align: left;
 	padding-top: 5px;
 	padding-right: 20px;
 	padding-bottom: 5px;
 	padding-left: 20px;
+	border-top-width: 2px;
+	border-right-width: 2px;
+	border-bottom-width: 2px;
+	border-left-width: 2px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #99C;
+	border-right-color: #9CC;
+	border-bottom-color: #9FF;
+	border-left-color: #9CC;
 }
 .divlight {
 	font-size: 12px;
@@ -168,4 +200,7 @@ a{
 	text-align: center;
 	color: #FFF;
 	width: 800px;
+}
+.lightblue {
+	color: #03C;
 }
