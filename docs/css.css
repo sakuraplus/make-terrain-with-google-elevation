@@ -204,3 +204,10 @@ a{
 .lightblue {
 	color: #03C;
 }
+.quotescript {
+	color: #FFF;
+	background-color: rgb(51,51,51);
+	width: 95%;
+	border: 1px double rgb(153,153,153);
+	padding: 5px;
+}

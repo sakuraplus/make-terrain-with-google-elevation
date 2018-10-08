@@ -1,0 +1,193 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+ <link href="css.css" rel="stylesheet" type="text/css" />
+  <title>Dynamic Flat Icon-Guide</title>
+  <meta name="Generator" content="EditPlus">
+  <meta name="Author" content="saku lee">
+  <meta name="Keywords" content="terrain,realworld,unity,assetstore,c#,google map,bing,map,Generator,heightmap,mesh,Dynamic,shadow,Flat,Icon,color offset,reflect,UI">
+  <meta name="Description" content="Dynamic materials of flat icon, for UGUI and 3D gameobject.">
+</head>
+
+
+		
+ <body  style="background-color:  #000000"  >
+ <div class="rtm" >
+ 
+<div class="menu0" >
+	<img src="filesSE2/WebTitle.jpg" width="800">
+</div>
+
+<div class="menu1">
+    <table width="100%"  align="center">
+  <tr align="right">
+    <td width="35%" align="right"></td>
+    <td width="20%"><a href="indexSE2.html">slideshow Effects</a></td>
+    <td width="15%"align="right"><a href="guideSE2.html">Guide</a></td>
+    <td width="15%"align="right"><a href="scriptSE2.html">Script</a></td>
+    <td width="15%"><a href="index.html">Home</a></td>
+  </tr>
+</table>
+</div>
+
+<div class="divabout">
+	Dynamic materials for making animations on your slide of slideshow effects.<br>
+    Also include AnimationEffectHelper and SlideshowHelper to make a slideshow with many pictures.
+</div>
+
+
+
+
+
+<div class="divdark">
+	<h1>SlideShowHelper/HalftoneHelper:</h1>
+	Example of making slideshows with Wheel/Halftone Effects/Triangular Billboard.<br>
+	<div class="imgfield_noborder">
+      <img src="filesSE2/剪贴板39.jpg"   /><br />         
+	</div> 
+</div>
+
+<div class="divdark">
+	<h1>Animation Effect Helper:</h1>
+	A simple tool of making animations based on time.<br>
+	Add a Keyword element to the Key List, fill out the Time and Value of each waypoint.<br>
+	You can also use the Keyword Assistant to add some frequently used keywords.<br>
+	<div class="imgfield_noborder">
+      <img src="filesSE2/剪贴板40.jpg"   /><br />         
+	</div> 
+</div>
+
+<div class="divdark">
+	<h1>Keywords of each material:</h1>
+	<div class="quotescript">
+        <table border="1" cellspacing="0" cellpadding="0"   width="100%">
+          <tr>
+            <td width="40%" valign="top"><p>TriangularBillboard(SurfaceShader)</p></td>
+            <td width="60%" valign="top"><p>_Progress (0~1)<br>
+              _Edge (0~1) :size of soft edge<br>
+              _ShadowAddup(0~2): strength of fake    shadow.<br>
+              _TexAddup,_Glossiness,_Metallic (0~1)</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>TriangularBillboard_ADV<br>
+              TriangularBillboard_ADV_Light</p></td>
+            <td  valign="top"><p>_Progress (0~1)<br>
+              _Edge (0~1) :size of soft edge<br>
+              _ShadowAddup(0~2): strength of fake    shadow.<br>
+              _TexAddup (0~1)</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>Shutter</p></td>
+            <td  valign="top"><p>_Progress (0~1)</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>Halftone_Lite<br>
+              HalftoneMaskTex</p></td>
+            <td  valign="top"><p>_Position(Float)<br>
+              _TexAddup(0~1)</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>HalftoneMask_ADV_Light(B)<br>
+              HalftoneMask_ADV(B)</p></td>
+            <td  valign="top"><p>_Position(Float)<br>
+              _Rotation(0~360)<br>
+              _PositionOffset(0~1)<br>
+              _TexAddup(0~1)</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>HalftoneMask(B) (SurfaceShader)</p></td>
+            <td  valign="top"><p>_Position(Float)<br>
+              _Rotation(0~360)<br>
+              _PositionOffset(0~1)<br>
+              _TexAddup,_Glossiness,_Metallic (0~1)</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>Halftone_PopUp_TypeA</p></td>
+            <td  valign="top"><p>_Position(Float)<br>
+              _TexAddup(0~1)<br>
+              _MixAB(0~1):color equalize</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>Halftone_PopUp_TypeB</p></td>
+            <td  valign="top"><p>_Position(Float)<br>
+              _Rotation(0~360)<br>
+              _PositionOffset(0~1)<br>
+              _TexAddup(0~1)<br>
+              _MixAB(0~1):color equalize</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>Wheel<br>
+              Wheel_Light</p></td>
+            <td  valign="top"><p>_Progress(0~1)<br>
+              _Edge (0~1) :size of soft edge<br>
+              _TexAddup(0~1)</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>Wheel(SurfaceShader)</p></td>
+            <td  valign="top"><p>_Progress(0~1)<br>
+              _Edge (0~1) :size of soft edge<br>
+              _TexAddup,_Glossiness,_Metallic (0~1)</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>Grids</p></td>
+            <td  valign="top"><p>_Progress(0~1)</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>GridDissolve</p></td>
+            <td  valign="top"><p>_Progress(0~1)<br>
+              _BubbleEdge(0~0.2): Highlight Thickness</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>GridPopUpMask</p></td>
+            <td  valign="top"><p>_Position(Float): Scale or diameter of mask texture<br>
+              _TexAddup(0~1)</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>PixelatedBasic<br>
+              PixelatedADV</p></td>
+            <td  valign="top"><p>_Progress(0~1)</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>TextureMask</p></td>
+            <td  valign="top"><p>_Progress(0~1)<br>
+              _TexAddup(0~1)</p></td>
+          </tr>
+          <tr>
+            <td valign="top"><p>PopUpRot_Mask<br>
+              PopUpAndRotate</p></td>
+            <td  valign="top"><p>_Position(Float): Scale or diameter of mask texture<br>
+              _Rotation(0~360)<br>
+              _TexAddup(0~1)</p></td>
+          </tr>
+        </table>
+       
+	</div> 
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+ </body>
+</html>
+
+         
