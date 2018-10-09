@@ -73,8 +73,11 @@ a{
 	text-decoration: none;
 	background-color: #202020;
 	border: 2px solid #202020;
-	padding: 2px;
 	text-align: center;
+	padding-top: 5px;
+	padding-right: 2px;
+	padding-bottom: 5px;
+	padding-left: 2px;
 }
 .divabout {
 	font-size: 16px;
@@ -209,5 +212,8 @@ a{
 	background-color: rgb(51,51,51);
 	width: 95%;
 	border: 1px double rgb(153,153,153);
-	padding: 5px;
+	padding-top: 10px;
+	padding-right: 5px;
+	padding-bottom: 10px;
+	padding-left: 5px;
 }
