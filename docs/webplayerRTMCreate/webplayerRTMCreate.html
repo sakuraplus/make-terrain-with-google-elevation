@@ -1,7 +1,4 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<header>SOAPAction</header>
-<?php header('Access-Control-Allow-Origin':'*');?>
-<?php header("SOAPAction"); ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -9,7 +6,13 @@
 	
 		<meta http-equiv="SOAPAction" content="text/html; charset=utf-8">
 		<title>Unity Web Player | RTM</title>
+		<?php header('Access-Control-Allow-Headers':'SOAPAction');?>
 		<script type='text/javascript' src='https://ssl-webplayer.unity3d.com/download_webplayer-3.x/3.0/uo/jquery.min.js'></script>
+		<script language="Javascript" type="text/javascript">
+				var client = new XMLHttpRequest();
+				client.open("GET", "http://bar.org/b")
+				client.setRequestHeader('SOAPAction','text/html')
+		</script>
 		<script type="text/javascript">
 		<!--
 		var unityObjectUrl = "http://webplayer.unity3d.com/download_webplayer-3.x/3.0/uo/UnityObject2.js";
