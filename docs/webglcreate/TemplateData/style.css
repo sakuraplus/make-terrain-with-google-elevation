@@ -8,7 +8,7 @@ html,body,div,canvas {
 	padding: 0;
 	background-color: #202020;
 	background-image: none;
-	color:rgb(255,255,255)
+	color:white
 }
 ::-moz-selection { color: #333; text-shadow: none; }
 ::selection {  color: #333; text-shadow: none; }
