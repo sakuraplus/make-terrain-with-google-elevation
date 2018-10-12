@@ -3,7 +3,13 @@
   ==== RESETS
 ****************************************/
 
-html,body,div,canvas { margin: 0; padding: 0; }
+html,body,div,canvas {
+	margin: 0;
+	padding: 0;
+	background-color: #202020;
+	background-image: none;
+	color:rgb(255,255,255)
+}
 ::-moz-selection { color: #333; text-shadow: none; }
 ::selection {  color: #333; text-shadow: none; }
 .clear:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
