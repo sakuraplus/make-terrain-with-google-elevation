@@ -34,7 +34,7 @@
 The setting window can be open by click setting button or through the top menu bar.
 The texture setting and style setting are folded, click [+] to expand them.<br />
  <div class="imgfield_noborder">
-    <img src="files/guide_clip_image020.jpg" class="imgfield"  /><br />     
+    <img src="files/guide_clip_image020.jpg"  class="imgfield"  /><br />     
  </div> 
  <br>
 Use the template of Google/Bing/Mapbox, the elevation an texture setting will set to a common value of the selected data source. Use the template value if you are not sure which value is able to use.<br>
@@ -382,6 +382,27 @@ check out how the basic material looks in the example scene <span class="lightbl
   </div>
   You can also have a try with an example location.
 </div>
+
+<div class="divdark">
+  <h2>Mesh Size:</h2>
+
+    <div class="imgfield_noborder">
+   <table><tr>
+    <td>There are three ways to decide the size of terrain you are going to generate.</td>
+    <td><img src="files/image121meshsize.png" class="imgfield"    /></td>
+    </tr></table>
+    </div>
+  Auto: The ratio of length to width is base on the target location. <br /> 
+  Square: Generate square terrain mesh.<br /> 
+  Custom: customize the length and width of mesh.<br /> 
+  
+  <div class="imgfield_noborder">
+  <img src="files/image123meshsize.png" class="imgfield"  /><br /> 
+   When custom is checked, you need to define the value of both width and length.<br /> 
+  </div>
+ 
+</div>
+
 <div class="divdark">
   <h2>Diagnosis Tool:</h2>
  If you found RTM works not correctly, the diagnosis tool might help to find which problem you have got.
@@ -403,6 +424,18 @@ The result will show what caused the incorrect work, read the Google and Bing AP
 </div>
 <br />
 After generating a piece of terrain, one  height map picture will be saved in the texture directory. <br />
+<br />
+
+<div class="imgfield">
+<table>
+  <tr>
+    <td><span class="lightblue">※Uncheck Save-Heightmap in Advanced Setting to avoid saving files to local.</span><br /></td>
+    <td><img src="files/image133savefile.png"   /></td>
+  </tr>
+</table>
+</div><br />
+
+
   Use the <strong><em><u>Generate From Height Map</u></em></strong> to rebuild a mesh with a <u>height map</u>.
 <br />
 <div class="imgfield_noborder">
