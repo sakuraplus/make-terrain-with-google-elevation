@@ -34,7 +34,7 @@ public class tutMap : MonoBehaviour {
 				_vertices [self].y = height;
 			}
 		}
-		setUV();
+	//	setUV();
 		setMeshTriangles ();
 		DrawMesh ();
 		DrawTexture ();
