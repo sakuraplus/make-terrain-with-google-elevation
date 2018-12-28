@@ -384,24 +384,43 @@ check out how the basic material looks in the example scene <span class="lightbl
 </div>
 
 <div class="divdark">
-  <h2>Mesh Size:</h2>
-
+  <h2>&para;Mesh Size Type:</h2>
     <div class="imgfield_noborder">
    <table><tr>
-    <td>There are three ways to decide the size of terrain you are going to generate.</td>
+    <td>There are three ways to decide the size of theterrain you are going to generate.</td>
     <td><img src="files/image121meshsize.png" class="imgfield"    /></td>
     </tr></table>
+    <br>
+    <img src="files/meshsizeN01.png" width="711" class="imgfield"    />
     </div>
-  Auto: The ratio of length to width is base on the target location. <br /> 
-  Square: Generate square terrain mesh.<br /> 
+  Auto: The ratio of length to width is base on the target location. <span class="lightblue">Width/Length=DistanceEW  / DistanceNS</span><br /> 
+  Square: Generate square terrain mesh.<span class="lightblue">Width = Length</span><br /> 
   Custom: customize the length and width of mesh.<br /> 
   
   <div class="imgfield_noborder">
   <img src="files/image123meshsize.png" class="imgfield"  /><br /> 
    When custom is checked, you need to define the value of both width and length.<br /> 
   </div>
- 
+  <br>
+  <span class="lightblue">※The type of Mesh size controls only the size of Gameobject. It will not affect the geographical region. </span>
 </div>
+
+
+<div class="divdark">
+  <h2>&para;Center Mode Adv Setting:</h2>
+  <br>
+  There are two calculation methods of Meshsize and the geographical region.
+  <br>
+    <div class="imgfield_noborder">
+ 	<img src="files/meshsizeCM01.png" width="98%" class="imgfield"    />
+    </div>
+  example:<br>
+While MeshsizeType is Auto and Same lat/lng span, the value of Distance(EW) will be DistanceNS*Cos(lat).
+<br /> 
+
+</div>
+
+
 
 <div class="divdark">
   <h2>Diagnosis Tool:</h2>
