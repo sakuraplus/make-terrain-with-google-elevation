@@ -120,12 +120,14 @@
               Wheel_Light</p></td>
             <td  valign="top"><p>_Progress(0~1)<br>
               _Edge (0~1) :size of soft edge<br>
-              _TexAddup(0~1)</p></td>
+              _TexAddup(0~1)<br>
+              _OffsetR(0~2*π):Offset of start rotation</p></td>
           </tr>
           <tr>
             <td valign="top"><p>Wheel(SurfaceShader)</p></td>
             <td  valign="top"><p>_Progress(0~1)<br>
               _Edge (0~1) :size of soft edge<br>
+              _OffsetR(0~2*π):Offset of start rotation<br>
               _TexAddup,_Glossiness,_Metallic (0~1)</p></td>
           </tr>
           <tr>
@@ -153,12 +155,34 @@
               _TexAddup(0~1)</p></td>
           </tr>
           <tr>
+            <td valign="top"><p>TexMaskSketch</p></td>
+            <td  valign="top"><p> _Threshold(0~1):Used as progress<br>
+          	  _ShadowS(0~1): Strength of sketch texture<br>
+              _SoftEdge (0~1):Size of soft edge</p></td>
+          </tr>       
+          <tr>
             <td valign="top"><p>PopUpRot_Mask<br>
               PopUpAndRotate</p></td>
             <td  valign="top"><p>_Position(Float): Scale or diameter of mask texture<br>
               _Rotation(0~360)<br>
               _TexAddup(0~1)</p></td>
           </tr>
+
+          <tr>
+            <td valign="top"><p>ANI_barswipe<br>
+              ANI_barswipe2</p></td>
+            <td  valign="top"><p>_Progress(0~1)<br>
+              _Rotation(0~360)</p></td>
+          </tr>  
+          <tr>
+            <td valign="top"><p>ANI_barswipeWhirl</p></td>
+            <td  valign="top"><p>_Progress(0~1)</p></td>
+          </tr>                      
+          <tr>
+            <td valign="top"><p>BackgroundLoop</p></td>
+            <td  valign="top"><p>_Progress(0~1)</p></td>
+          </tr>          
+          
         </table>
        
 	</div> 
