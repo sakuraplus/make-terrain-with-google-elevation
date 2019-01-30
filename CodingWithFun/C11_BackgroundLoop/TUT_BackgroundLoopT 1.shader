@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 //SlideshowEffects2D-->sakuraplus-->https://sakuraplus.github.io/make-terrain-with-google-elevation/index.html
-Shader "TUT/BackgroundLoopT" {
+Shader "TUT/BackgroundLoopT1" {
 	Properties {
 		_MainTex ("Main Texture", 2D) = "black" {}		
 		_Speed("speed",  Range(0,3)) = 1.0		
