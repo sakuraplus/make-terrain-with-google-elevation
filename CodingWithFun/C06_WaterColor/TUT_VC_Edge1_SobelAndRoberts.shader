@@ -26,8 +26,6 @@ Shader "tut/VC-E-1" {
 
 			struct v2f {
 				float4 pos : SV_POSITION;
-				fixed2 uvTB:TEXCOORD0;
-				fixed2 uvTM:TEXCOORD1;
 				half2 uvTA[9] : TEXCOORD2;
 			};
 
