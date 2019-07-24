@@ -20,6 +20,7 @@ Shader "tut/VC-E-2" {
 			sampler2D _MainTex;
 			half4 _MainTex_ST;
 
+
 			uniform half4 _MainTex_TexelSize;
 			fixed _OutlineThreshold;
 			fixed _OutlineSize;
@@ -31,7 +32,6 @@ Shader "tut/VC-E-2" {
 
 			struct v2f {
 				float4 pos : SV_POSITION;
-
 				half2 uvTA[9] : TEXCOORD2;
 			};
 
@@ -40,7 +40,7 @@ Shader "tut/VC-E-2" {
 				//o.pos = UnityObjectToClipPos(v.vertex);//mul(UNITY_MATRIX_MVP, v.vertex);
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 
-				half2 uvTA = (v.texcoord-_MainTex_ST.zw)*_MainTex_ST.xy ;						
+				half2 uvTA = (v.texcoord-_MainTex_ST.zw)*_MainTex_ST.xy ;				
 				fixed2 size=fixed2(_MainTex_TexelSize.x, _MainTex_TexelSize.y) * _OutlineSize;
 				o.uvTA[0] = uvTA + _MainTex_TexelSize.xy * half2(-1, -1)* size;
 				o.uvTA[1] = uvTA + _MainTex_TexelSize.xy * half2(0, -1) * size;
@@ -79,19 +79,21 @@ Shader "tut/VC-E-2" {
 					#endif	
 					texColor =Linear01Depth(UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, i.uvTA[it].xy)));
 				#else
-				//if _TYPE_LUMINANCE		
+				//#if _TYPE_LUMINANCE		
 					texColor = luminance(tex2D(_MainTex, i.uvTA[it]));
 				#endif
 					edgeX += texColor * Gx[it];
 					edgeY += texColor * Gy[it];
 				}
 
+			
 				half edge =abs(edgeX) + abs(edgeY);
 				//edge=sqrt((edgeX*edgeX) + (edgeY*edgeY));
 				edge=saturate((1-edge)/_OutlineThreshold);
-				return edge;			
+				return edge;		
 			
 			}
+
 
 			
 			half Robert(v2f i) {
@@ -108,7 +110,8 @@ Shader "tut/VC-E-2" {
 				edge=saturate((1-edge)/_OutlineThreshold);
 				return edge;
 			}			
-//////////////////////////////				
+
+			
 			half RobertDepth(v2f i) {
 				#if UNITY_UV_STARTS_AT_TOP
 					if (_MainTex_TexelSize.y < 0){
@@ -150,11 +153,16 @@ Shader "tut/VC-E-2" {
 					#endif					
 				#endif
 				
-				#if _TYPE_DEPTH				
+				#if _TYPE_DEPTH
+				
+				
 				   float d = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, fixed2(i.uvTA[4].x,1-i.uvTA[4].y)));
            d = Linear01Depth(d);
-           texMain= fixed4(d,d,d,1);
-
+           texMain= fixed4(d,d,d,1);           
+           
+					//texMain=tex2D(_CameraDepthTexture, fixed2(i.uvTA[4].x,1-i.uvTA[4].y));
+					//texMain=fixed4( texMain.r,texMain.r,texMain.r,1);
+			
 					#if _OPERATOR_SOBEL						
 						edge = Sobel(i);
 					#endif
@@ -182,6 +190,7 @@ Shader "tut/VC-E-2" {
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma target 3.0 
+
 			#pragma multi_compile _TYPE_DEPTH   _TYPE_LUMINANCE
 			#pragma multi_compile _OPERATOR_SOBEL _OPERATOR_ROBERT
 

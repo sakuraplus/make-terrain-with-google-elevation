@@ -3,7 +3,6 @@
 Shader "tut/VC-E-1" {
 	Properties {
 		_MainTex ("Main Texture", 2D) = "black" {}
-
 		[Header(Outline)]
 		_OutlineThreshold ("Threshold", Range(0, 4)) = 0.1
 		_OutlineSize ("Size ", Range(0, 1)) = 0
@@ -17,7 +16,6 @@ Shader "tut/VC-E-1" {
 
 			sampler2D _MainTex;
 			half4 _MainTex_ST;
-
 			uniform half4 _MainTex_TexelSize;
 			fixed _OutlineThreshold;
 			fixed _OutlineSize;
@@ -46,7 +44,6 @@ Shader "tut/VC-E-1" {
 				o.uvTA[7] = uvTA + _MainTex_TexelSize.xy * half2(0, 1)  * _OutlineSize;
 				o.uvTA[8] = uvTA + _MainTex_TexelSize.xy * half2(1, 1)  * _OutlineSize;
 
-
 				return o;
 			}
 
@@ -72,13 +69,13 @@ Shader "tut/VC-E-1" {
 					edgeY += texColor * Gy[it];
 				}
 
-				half edge =abs(edgeX) + abs(edgeY);
-				//edge=sqrt((edgeX*edgeX) + (edgeY*edgeY));
-				edge=saturate((1-edge)/_OutlineThreshold);
-				return edge;		
+				half edge = 1 - abs(edgeX) - abs(edgeY);
+				edge=clamp(edge/_OutlineThreshold,0,1);
+				return edge;
 			}
 
 			half Robert(v2f i) {
+				
 					
 				half LD =luminance( tex2D(_MainTex, i.uvTA[0].xy));
 				half RD =luminance( tex2D(_MainTex, i.uvTA[2].xy));
@@ -91,7 +88,7 @@ Shader "tut/VC-E-1" {
 			
 				edge=saturate((1-edge)/_OutlineThreshold);
 				return edge;
-			}	
+			}
 
 
 

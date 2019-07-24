@@ -7,7 +7,6 @@ Shader "tut/VC-M-3" {
 		
 		[Header(Paint)]
 		_MainTexP ("Paint Mask", 2D) = "black" {}
-		_MainTexB ("Paint Back", 2D) = "black" {}
 		_Progress("Paint Progress ", Float) = 0
 		
 		[Header(Outline)]
@@ -108,8 +107,8 @@ Shader "tut/VC-M-3" {
 				
 	
 			fixed4 texPaint=tex2D(_MainTexP, i.uvTM);
-			fixed4 texBack=tex2D(_MainTexB, i.uvTM);
-			fixed4 paperOrPaint=lerp (texBack, texMain,saturate(_Progress-luminance(texPaint)) );
+
+			fixed4 paperOrPaint=lerp (fixed4( texMask.rgb,1), texMain,saturate(_Progress-luminance(texPaint)) );
 			fixed4 onmask = lerp(paperOrPaint, texMask, texMask.a);
 			
 

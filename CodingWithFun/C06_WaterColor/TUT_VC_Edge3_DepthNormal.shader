@@ -10,7 +10,6 @@ Shader "tut/VC-E-3" {
 		_Outlinecolor("Color",COLOR)=(0, 0, 0, 1)
 		
 		[KeywordEnum(DepthNormal, test)] _TYPE ("Type", Float) = 0
-
 	}
 	SubShader {
 		Tags {"Queue"="Geometry" }
@@ -19,6 +18,7 @@ Shader "tut/VC-E-3" {
 
 			sampler2D _MainTex;
 			half4 _MainTex_ST;
+
 
 			uniform half4 _MainTex_TexelSize;
 			fixed _OutlineThreshold;
@@ -31,7 +31,6 @@ Shader "tut/VC-E-3" {
 
 			struct v2f {
 				float4 pos : SV_POSITION;
-
 				half2 uvTA[9] : TEXCOORD2;
 			};
 
@@ -46,7 +45,7 @@ Shader "tut/VC-E-3" {
 				o.uvTA[1] = uvTA + _MainTex_TexelSize.xy * half2(0, -1) * size;
 				o.uvTA[2] = uvTA + _MainTex_TexelSize.xy * half2(1, -1) * size;
 				o.uvTA[3] = uvTA + _MainTex_TexelSize.xy * half2(-1, 0) * size;
-				o.uvTA[4] = uvTA + _MainTex_TexelSize.xy * half2(0, 0)  * size;
+				o.uvTA[4] = uvTA;// + _MainTex_TexelSize.xy * half2(0, 0)  * size;
 				o.uvTA[5] = uvTA + _MainTex_TexelSize.xy * half2(1, 0)  * size;
 				o.uvTA[6] = uvTA + _MainTex_TexelSize.xy * half2(-1, 1) * size;
 				o.uvTA[7] = uvTA + _MainTex_TexelSize.xy * half2(0, 1)  * size;
@@ -56,9 +55,7 @@ Shader "tut/VC-E-3" {
 				return o;
 			}
 
-
-
-//////////////////////////////			
+		
 			half RobertDepthN(v2f i) {
 				#if UNITY_UV_STARTS_AT_TOP
 					if (_MainTex_TexelSize.y < 0){
